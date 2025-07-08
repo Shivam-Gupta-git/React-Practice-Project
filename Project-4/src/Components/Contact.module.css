@@ -1,0 +1,71 @@
+.contact_container{
+  width: 90%;
+  margin-top: 20px;
+}
+.contact_box{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 5px 10px;
+  justify-content: space-between;
+  background-color: rgb(253, 234, 151);
+  border-radius: 10px;
+}
+
+.contact_icon{
+  font-size: 50px;
+  color: orange;
+}
+.contact_info{
+ width: 90%;
+ display: flex;
+ flex-direction: column;
+ justify-content: center;
+ gap: 3px;
+ padding:0px 10px;
+ /* border: 1px solid black; */
+}
+.contact_name{
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: rgb(71, 69, 69);
+  
+}
+.contact_email{
+  font-size: 1rem;
+  color: rgb(88, 87, 87);
+  margin-top: -5px;
+}
+.contact_number{
+  font-size: 1rem;
+  color: rgb(88, 87, 87);
+  margin-top: -7px;
+}
+.contact_delete{
+  height: 50px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 10px;
+}
+.edit_icon{
+  font-size: 40px;
+  color: orange;
+  border-radius: 50%;
+  padding: 5px;
+  cursor: pointer;
+}
+.delete_icon{
+  font-size: 40px;
+  color: orange;
+  border-radius: 50%;
+  padding: 5px;
+  cursor: pointer;
+}
+.delete_icon:hover,
+.edit_icon:hover{
+  background-color: gray;
+  transition: all .5s ease-in-out;
+}

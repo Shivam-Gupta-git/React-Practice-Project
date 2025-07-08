@@ -1,0 +1,26 @@
+.Navbar_container{
+  width: 100%;
+  top: 0;
+  left: 0;
+  position: sticky;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+.navbar_section{
+  width: 90%;
+  height: 60px;
+  border: 1px solid black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  border-radius: 10px;
+  background-color: white;
+  gap: 5px;
+}
+.navbar_section h1{
+  font-size: 1.7rem;
+  font-weight: 800;
+}
