@@ -1,0 +1,45 @@
+
+
+ .phase5-main-container{
+  width: 100%;
+  padding: 10px;
+  margin-top: 50px;
+ gap: 5px;
+ overflow: hidden;
+
+ }
+ .carousel-boxes{
+
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  overflow: hidden;
+ }
+ .button-box1{
+  width: 40px;
+  height: 40px;
+  background-color: rgb(42, 96, 78);
+  border-radius: 50%;
+}
+
+
+ @media(max-width:800px){
+  .carousel-boxes{
+    width: 100%;
+  }
+  .carousel-box{
+    height: 250px;
+    width: 300px;
+  }
+
+ }
+ @media(max-width:500px){
+  .carousel-box{
+    height: 200px;
+    width: 250px;
+  }
+  .button-box1{
+    width: 25px;
+    height: 24px;
+  }
+ }
