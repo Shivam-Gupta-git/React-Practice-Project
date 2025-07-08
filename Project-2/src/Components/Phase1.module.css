@@ -1,0 +1,43 @@
+.Phase1_Container{
+  width: 100%;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+}
+.Phase1_Container h1{
+  font-size: 2.7rem;
+  font-weight: 800;
+  text-align: center;
+}
+.Phase1_Container p{
+  font-size: 1rem;
+  width: 90%;
+  text-align: center;
+}
+
+@media(max-width:750px){
+  .Phase1_Container{
+    padding: none;
+  }
+  .Phase1_Container h1{
+    font-size: 2.4rem;
+  }
+  .Phase1_Container p{
+    font-size: .8rem;
+  }
+}
+
+@media(max-width:500px){
+  .Phase1_Container{
+    height: 250px;
+  }
+  .Phase1_Container h1{
+    font-size: 2rem;
+  }
+  .Phase1_Container p{
+    font-size: .6rem;
+  }
+}

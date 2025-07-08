@@ -1,0 +1,122 @@
+.Phase2_container{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+.contact_form{
+  width: 45%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+.top_button{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+.message_button{
+  width: 35%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  background-color: black;
+  color: white;
+  gap: 10px;
+  border: 1px solid black;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.call_button{
+  width: 35%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  background-color: black;
+  color: white;
+  gap: 10px;
+  border: 1px solid black;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.top_second_button{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+.email_button{
+  width: 73%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1px solid black;
+  color: black;
+  background-color: white;
+  border-radius: 5px;
+  padding: 5px;
+  font-size: 0.9rem;
+  font-weight: 600;
+   text-decoration: none;
+}
+
+.form_page{
+  width: 73%;
+  margin-top: 20px;
+}
+.Image_container{
+  width: 50%;
+  height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.Image_container img{
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+@media(max-width: 1050px){
+  .message_button{
+    font-size: 0.5rem;
+  }
+  .call_button{
+    font-size: 0.5rem;
+  }
+}
+
+@media(max-width: 750px){
+  .Phase2_container{
+    flex-direction: column;
+  }
+  .contact_form{
+    width: 100%;
+  }
+  .Image_container{
+    width: 100%;
+    margin-top: 10px;
+  }
+  .Image_container img{
+    width: 90%;
+  }
+
+}
+
+@media(max-width: 500px){
+  
+  .Image_container{
+    height: 300px;
+  }
+}

@@ -1,0 +1,80 @@
+
+.FoodItems_card{
+  width: 400px;
+  border: 1px solid rgb(127, 123, 123);
+  border-radius: 10px;
+  background-color: rgba(128, 128, 128, 0.232);
+}
+.FoodItems_card:hover{
+  border: none;
+  box-shadow: 1px 1px 4px 3px rgba(120, 119, 119, 0.375),
+  inset -1px 1px 2px 2px rgba(195, 192, 192, 0.26),
+  inset 2px 2px 1px 1px rgba(169, 167, 167, 0.303);
+}
+.foodItem_info{
+  display: flex;
+  flex-direction: row;
+  padding: 15px;
+  gap: 10px;
+  height: 200px;
+}
+.foodItem_Img{
+  width: 150px;
+  height: 150px;
+  /* border: 1px solid black; */
+  border-radius: 50%;
+}
+.foodItem_Img img{
+  height: 100%;
+  width: 100%;
+  border-radius: 50%;
+}
+.foodItem_text{
+  padding: 5px;
+  width: 200px;
+  /* border: 1px solid black; */
+}
+.items_name{
+  font-size: 1.3rem;
+  color: white;
+}
+.text{
+  font-size: 0.6rem;
+  color: white;
+}
+.price_box{
+  /* border: 1px solid black; */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+.original_price{
+  font-size: .9rem;
+  color: white;
+}
+.discount{
+  font-size: .9rem;
+  color: white;
+}
+.current_price{
+  font-size: .9rem;
+  color: white;
+}
+.foodItem_button{
+  display: flex;
+  float: right;
+  padding: 10px;
+}
+.order{
+  border-radius: 5px;
+  padding: 5px;
+  background: rgb(186, 2, 2);
+  border: 1px solid brown;
+  color: white;
+  box-shadow: 1px 1px 3px 1px rgba(151, 150, 150, 0.599),
+  inset -1px -1px 2px 2px rgb(221, 72, 72);
+}
+.order:hover{
+  background-color: brown;
+  box-shadow:  inset -1px -1px 2px 2px rgb(215, 42, 42);;
+}

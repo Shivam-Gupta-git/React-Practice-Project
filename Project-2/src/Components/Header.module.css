@@ -1,0 +1,42 @@
+.Header_container{
+  width: 100%;
+  height: 60px;
+  top: 0;
+  left: 0;
+  position: sticky;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 0px  30px;
+  background-color: antiquewhite;
+  z-index: +11;
+  align-items: center;
+}
+.Logo_box{
+  height: 50px;
+  width: 100px;
+  border: 1px solid black;
+}
+ul{
+  display: flex;
+}
+ul li{
+  padding:0px 30px;
+  list-style: none;
+  line-height: 60px;
+}
+ul li a{
+  text-decoration: none;
+  color: black;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+@media(max-width:500px){
+  .Logo_box{
+   display: none;
+  }
+  ul li a{
+    font-size: 1rem;
+  }
+}
