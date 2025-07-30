@@ -6,6 +6,7 @@ function App() {
 
   return (
     <>
+    {/* Import components File */}
     <Header></Header>
     <HeroSection></HeroSection>
     </>
