@@ -29,7 +29,7 @@ function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // NavLinks
+  // NavLinks......
   const navLinks = (
     <>
       <NavLink to="/" className="text-white hover:text-yellow-300 transition">
@@ -75,7 +75,7 @@ function Navbar() {
       </span>
     </Link>
   );
-  // SideBar Links
+  // SideBar Nav Links.....
   const sidebarLinks = (
     <>
       <NavLink
