@@ -21,7 +21,7 @@ const handelGenerateButton = (event)=>{
       name='qr-generator' 
       placeholder='Enter Your QR Name' 
       onChange={(e)=> setInputVal(e.target.value)} 
-      className='outline-0 border border-gray-500 w-[100%] p-1.5 mt-2 rounded shadow-sm shadow-blue-400'/>
+      className='outline-0 border border-gray-500 w-[100%] p-1.5 mt-2 py-2 rounded shadow-sm shadow-blue-400'/>
       
       <button 
       disabled={inputVal && inputVal.trim() !== " " ? false : true} 
