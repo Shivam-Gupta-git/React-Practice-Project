@@ -20,12 +20,12 @@ function ScrollIndicator() {
   }, [])
 
   const handelScrollPercentage = ()=>{
-   console.log(
-    document.body.scrollTop, 
-    document.documentElement.scrollTop, 
-    document.documentElement.scrollHeight, 
-    document.documentElement.clientHeight
-    )
+  //  console.log(
+  //   document.body.scrollTop, 
+  //   document.documentElement.scrollTop, 
+  //   document.documentElement.scrollHeight, 
+  //   document.documentElement.clientHeight
+  //   )
 
     const scrolled = document.body.scrollTop || document.documentElement.scrollTop;
     const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
