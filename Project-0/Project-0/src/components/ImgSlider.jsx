@@ -37,7 +37,7 @@ function ImgSlider() {
 
   return (
     <>
-    <div  className='w-[100%] h-[500px] border flex items-center justify-center bg-amber-300'>
+    <div  className='w-[100%] border flex items-center justify-center bg-amber-300 p-5'>
     <div 
     onMouseEnter={()=> setHovering(true)} 
     onMouseLeave={()=> setHovering(false)}
