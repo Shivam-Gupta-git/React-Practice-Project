@@ -5,6 +5,8 @@ import UnControlledComp_2 from './components/2.UnControlledComp'
 import UseState_4 from './components/4.UseState'
 import UseEffect from './components/5.useEffect'
 import MemoParentComponent from './components/6.useMemo'
+import ReactMemo from './components/7.React.Memo'
+import CustomeHook from './components/CustomeHook/CustomeHook'
 
 function App() {
 
@@ -16,7 +18,9 @@ function App() {
      {/* <ForwardRef_3></ForwardRef_3> */}
      {/* <UseState_4></UseState_4> */}
      {/* <UseEffect/> */}
-     <MemoParentComponent/>
+     {/* <MemoParentComponent/> */}
+     {/* <ReactMemo/> */}
+     <CustomeHook/>
     </>
   )
 }
