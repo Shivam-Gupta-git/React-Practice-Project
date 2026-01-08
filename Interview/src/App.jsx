@@ -4,6 +4,7 @@ import ControlledComp_1 from './components/1.ControlledComp'
 import UnControlledComp_2 from './components/2.UnControlledComp'
 import UseState_4 from './components/4.UseState'
 import UseEffect from './components/5.useEffect'
+import MemoParentComponent from './components/6.useMemo'
 
 function App() {
 
@@ -14,7 +15,8 @@ function App() {
      {/* <UnControlledComp_2></UnControlledComp_2> */}
      {/* <ForwardRef_3></ForwardRef_3> */}
      {/* <UseState_4></UseState_4> */}
-     <UseEffect/>
+     {/* <UseEffect/> */}
+     <MemoParentComponent/>
     </>
   )
 }
