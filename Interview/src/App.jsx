@@ -7,6 +7,7 @@ import UseEffect from './components/5.useEffect'
 import MemoParentComponent from './components/6.useMemo'
 import ReactMemo from './components/7.React.Memo'
 import CustomeHook from './components/CustomeHook/CustomeHook'
+import ProtectedRouter from './components/Protected Routing/ProtectedRouter'
 
 function App() {
 
@@ -20,7 +21,8 @@ function App() {
      {/* <UseEffect/> */}
      {/* <MemoParentComponent/> */}
      {/* <ReactMemo/> */}
-     <CustomeHook/>
+     {/* <CustomeHook/> */}
+     <ProtectedRouter/>
     </>
   )
 }
