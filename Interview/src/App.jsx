@@ -8,6 +8,7 @@ import MemoParentComponent from './components/6.useMemo'
 import ReactMemo from './components/7.React.Memo'
 import CustomeHook from './components/CustomeHook/CustomeHook'
 import ProtectedRouter from './components/Protected Routing/ProtectedRouter'
+import LazyLoading from './components/Lazy Loading/LazyLoading'
 
 function App() {
 
@@ -23,6 +24,7 @@ function App() {
      {/* <ReactMemo/> */}
      {/* <CustomeHook/> */}
      <ProtectedRouter/>
+     <LazyLoading/>
     </>
   )
 }
