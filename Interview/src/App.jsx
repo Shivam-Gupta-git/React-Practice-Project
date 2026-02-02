@@ -10,6 +10,8 @@ import CustomeHook from './components/CustomeHook/CustomeHook'
 import ProtectedRouter from './components/Protected Routing/ProtectedRouter'
 import LazyLoading from './components/Lazy Loading/LazyLoading'
 import UseCallback from './components/8.UseMemo'
+import UseMemoExample from './components/8.UseMemo'
+import UseCallbackExample from './components/UseCallback/UseCallback'
 
 function App() {
 
@@ -26,7 +28,8 @@ function App() {
      {/* <CustomeHook/> */}
      {/* <ProtectedRouter/> */}
      {/* <LazyLoading/> */}
-     <UseCallback/>
+     {/* <UseMemoExample/> */}
+     <UseCallbackExample/>
     </>
   )
 }
