@@ -12,6 +12,8 @@ import LazyLoading from './components/Lazy Loading/LazyLoading'
 import UseCallback from './components/8.UseMemo'
 import UseMemoExample from './components/8.UseMemo'
 import UseCallbackExample from './components/UseCallback/UseCallback'
+import Props from './components/Props/props'
+import State from './components/State/State'
 
 function App() {
 
@@ -29,7 +31,9 @@ function App() {
      {/* <ProtectedRouter/> */}
      {/* <LazyLoading/> */}
      {/* <UseMemoExample/> */}
-     <UseCallbackExample/>
+     {/* <UseCallbackExample/> */}
+     {/* <Props/> */}
+     <State/>
     </>
   )
 }
