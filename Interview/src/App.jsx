@@ -14,12 +14,14 @@ import UseMemoExample from './components/8.UseMemo'
 import UseCallbackExample from './components/UseCallback/UseCallback'
 import Props from './components/Props/props'
 import State from './components/State/State'
+import Conditional_Rendering from './components/Small Topics/Conditional_Rendering'
 
 function App() {
 
 
   return (
     <>
+    <div className='flex flex-col'>
      {/* <ControlledComp_1></ControlledComp_1> */}
      {/* <UnControlledComp_2></UnControlledComp_2> */}
      {/* <ForwardRef_3></ForwardRef_3> */}
@@ -34,6 +36,8 @@ function App() {
      {/* <UseCallbackExample/> */}
      {/* <Props/> */}
      <State/>
+     <Conditional_Rendering/>
+    </div>
     </>
   )
 }
