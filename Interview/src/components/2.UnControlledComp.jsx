@@ -13,8 +13,9 @@ function UnControlledComp_2() {
    
   } 
   return (
-<div className="min-h-screen w-full bg-gray-300 from-slate-100 to-slate-300 flex items-center justify-center p-4">
-  <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-6">
+<div className=" w-full bg-gray-800 from-slate-100 to-slate-300 flex items-center justify-center py-10 flex-col">
+
+  <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-6 mt-10">
     
     {/* Heading */}
     <h1 className="text-3xl font-semibold text-center text-gray-800 mb-6">

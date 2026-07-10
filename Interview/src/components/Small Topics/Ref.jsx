@@ -8,10 +8,8 @@ function Ref() {
   }
 
   return (
-<div className="min-h-screen flex items-center justify-center bg-gray-200 flex-col">
-<div className="w-full bg-indigo-300 flex items-center justify-center p-2">
-      <h1 className=" text-2xl font-bold text-white">Example of ref......</h1>
-      </div>
+<div className=" flex items-center justify-center bg-gray-800 flex-col p-10">
+
   <div className="bg-white w-96 p-8 rounded-2xl shadow-2xl text-center mt-10">
 
     {/* Icon */}
@@ -31,7 +29,7 @@ function Ref() {
       ref={inputRef}
       type="text"
       placeholder="Enter your name"
-      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-200 transition"
+      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-200 transition text-black"
     />
 
     {/* Button */}

@@ -5,10 +5,8 @@ function Conditional_Rendering() {
   
 
   return (
-    <div className="min-h-screen flex items-center justify-center flex-col gap-10 bg-gray-200">
-      <div className="w-full bg-indigo-300 flex items-center justify-center p-2">
-      <h1 className=" text-2xl font-bold text-white">Example of conditional rendering......</h1>
-      </div>
+    <div className="min-h-screen flex items-center justify-center flex-col gap-10 bg-gray-800 p-10">
+
       <div className="bg-gray-300 w-96 p-8 rounded-2xl shadow-2xl text-center">
 
         {/* Icon */}

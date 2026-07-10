@@ -10,10 +10,7 @@ function Props() {
 
   /*-------- Parents Component -----------*/
   return (
-    <div className="min-h-screen flex items-center justify-center  py-5 bg-gray-200 flex-col">
-      <div className="w-full bg-indigo-300 flex items-center justify-center p-2">
-      <h1 className=" text-2xl font-bold text-white">Example of Props......</h1>
-      </div>
+    <div className=" flex items-center justify-center  py-5 bg-gray-800 flex-col">
       <ChildComponent data={data} />
     </div>
   );
@@ -40,22 +37,22 @@ function ChildComponent({ data }) {
       <div className="p-6 space-y-4">
         <div className="flex justify-between border-b pb-2">
           <span className="font-semibold text-gray-600">👤 Name</span>
-          <span>{data.name}</span>
+          <span className="text-black">{data.name}</span>
         </div>
 
         <div className="flex justify-between border-b pb-2">
           <span className="font-semibold text-gray-600">🎂 Age</span>
-          <span>{data.age}</span>
+          <span className="text-black">{data.age}</span>
         </div>
 
         <div className="flex justify-between border-b pb-2">
           <span className="font-semibold text-gray-600">🎓 Course</span>
-          <span>{data.course}</span>
+          <span className="text-black">{data.course}</span>
         </div>
 
         <div className="flex justify-between">
           <span className="font-semibold text-gray-600">📞 Contact</span>
-          <span>{data.contact}</span>
+          <span className="text-black">{data.contact}</span>
         </div>
 
         <button className="w-full mt-6 bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition">

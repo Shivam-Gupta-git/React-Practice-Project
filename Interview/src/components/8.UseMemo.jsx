@@ -14,8 +14,9 @@ function UseMemoExample() {
   
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white shadow-lg rounded-xl p-6 w-80 text-center space-y-4">
+    <div className=" flex items-center justify-center bg-gray-800 flex-col p-10">
+      <div className="bg-white shadow-lg rounded-xl p-6 w-80 text-center space-y-4 ">
+        
         <h1 className="text-xl font-semibold text-gray-800">
           useMemo Example
         </h1> 

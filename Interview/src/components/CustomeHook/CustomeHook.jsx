@@ -6,7 +6,7 @@ function CustomeHook() {
   const [data, setdata] = useToggle(true);
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-purple-100 to-indigo-100 flex items-center justify-center p-4">
+    <div className="bg-gray-800 flex items-center justify-center py-10 flex-col">
       <div className="bg-white rounded-3xl shadow-2xl p-8 w-full max-w-xl space-y-8">
         
         <h1 className="text-2xl font-bold text-center text-gray-800">

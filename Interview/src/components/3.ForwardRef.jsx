@@ -1,44 +1,56 @@
-import React, { useRef } from "react";
+import React, { forwardRef, useRef } from "react";
 
 function ForwardRef_3() {
   const inputRef = useRef(null);
 
-  const handleInputButton = (e) => {
-    e.preventDefault();
-    inputRef.current.value = 1000;
+  const handleInputButton = () => {
+    inputRef.current.value = "1000";
     inputRef.current.focus();
-    inputRef.current.style.color = "red";
+    inputRef.current.style.color = "#4F46E5";
+    inputRef.current.style.fontWeight = "bold";
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-6 rounded-xl shadow-lg w-100 space-y-4">
-        <h2 className="text-xl font-semibold text-center text-gray-700">
-          Forward Ref Demo
-        </h2>
+    <div className=" flex items-center justify-center bg-gray-800 py-10 flex-col">
 
-        <UserInput ref={inputRef} />
+      <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden mt-10">
 
-        <button
-          onClick={handleInputButton}
-          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
-        >
-          Set Input Value
-        </button>
+        {/* Header */}
+        <div className="bg-indigo-300 p-6 text-center ">
+          <div className="text-6xl mb-2">🚀</div>
+          <h1 className="text-3xl font-bold text-white">
+            Forward Ref Demo
+          </h1>
+          <p className="text-indigo-100 mt-2">
+            Access a child input using <span className="font-semibold">forwardRef</span>
+          </p>
+        </div>
+
+        {/* Body */}
+        <div className="p-8">
+          <UserInput ref={inputRef} />
+
+          <button
+            onClick={handleInputButton}
+            className="w-full mt-6 bg-indigo-200 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 active:scale-95 transition duration-300"
+          >
+            ✨ Set Value & Focus
+          </button>
+        </div>
       </div>
     </div>
   );
 }
 
-export function UserInput ({ref}) {
+const UserInput = forwardRef((props, ref) => {
   return (
     <input
       ref={ref}
       type="text"
-      placeholder="Click button to auto-fill"
-      className="w-full px-3 py-2 border rounded-lg outline-none focus:ring-2 focus:ring-blue-400"
+      placeholder="Click the button..."
+      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-200 transition text-black"
     />
   );
-};
+});
 
 export default ForwardRef_3;

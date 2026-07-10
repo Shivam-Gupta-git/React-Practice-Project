@@ -7,8 +7,9 @@ function Header() {
   const navigate = useNavigate()
 
   const handelLogoutButton = () => {
-     setToken(null)
-     navigate('/Login')
+    localStorage.removeItem('token')
+    setToken(null)
+    navigate('/login')
   }
   const linkStyle = ({ isActive }) =>
     isActive
@@ -16,7 +17,7 @@ function Header() {
       : "text-black px-4 py-2 rounded-lg hover:bg-black/20 transition";
 
   return (
-    <header className="w-full h-16 bg-amber-400 flex items-center justify-between px-8 z-50 shadow-md">
+    <header className="w-full h-16 bg-amber-400 flex items-center justify-between px-8 z-50 shadow-md ">
       
       {/* Logo */}
       <h1 className="text-xl font-bold text-black tracking-wide">

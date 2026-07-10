@@ -7,11 +7,12 @@ function Parent() {
 
   const childHandler = useCallback(() => {
     console.log("child handler called");
-  }, [countChild]);
+  }, []);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white shadow-lg rounded-xl p-6 w-96 space-y-5">
+    <div className=" flex items-center justify-center bg-gray-800 flex-col py-10">
+
+      <div className="bg-white shadow-lg rounded-xl p-6 w-96 space-y-5 ">
         <h1 className="text-xl font-semibold text-gray-800 text-center">
           useCallback Example
         </h1>

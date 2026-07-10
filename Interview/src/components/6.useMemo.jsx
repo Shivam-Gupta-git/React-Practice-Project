@@ -3,8 +3,10 @@ import { useMemo, useState } from "react";
 const ExpensiveComponent = () => {
   const total = useMemo(() => {
     console.log("Calculating Sum...");
-    let i;
-    for (i = 0; i <= 1000000000; i++) {}
+    let i = 0;
+    for (i = 0; i <= 1000000000; i++) {
+      /* simulate expensive work */
+    }
     return i;
   }, []);
 
@@ -31,7 +33,7 @@ const MemoParentComponent = () => {
   const [count, setCount] = useState(0);
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-indigo-100 to-blue-100 flex items-center justify-center p-4">
+    <div className="bg-gray-800 flex items-center justify-center py-10 flex-col">
       <div className="bg-white rounded-3xl shadow-2xl p-8 space-y-6 w-full max-w-lg">
         <h1 className="text-2xl font-bold text-center text-gray-800">
           useMemo Optimization Demo

@@ -4,10 +4,7 @@ function State() {
   const [count, setCount] = useState(0);
 
   return (
-    <div className="min-h-screen flex items-center justify-center flex-col bg-gray-200">
-      <div className="w-full bg-indigo-300 flex items-center justify-center p-2">
-      <h1 className=" text-2xl font-bold text-white">Example of state......</h1>
-      </div>
+    <div className="min-h-screen flex items-center justify-center flex-col bg-gray-800 p-7">
       <div className="bg-gray-200 p-10 rounded-2xl shadow-2xl w-80 text-center mt-10">
         <h1 className="text-3xl font-bold text-gray-800 mb-2">
           Counter App

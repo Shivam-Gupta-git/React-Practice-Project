@@ -22,7 +22,7 @@ function Login() {
     }
     console.log(formData); 
     localStorage.setItem('token', 'userLoggedIn');
-    navigate('/About')
+    navigate('/about')
     setFormData({
       email: '',
       password: ''

@@ -1,0 +1,812 @@
+import { lazy } from 'react'
+import {
+  Box,
+  Zap,
+  GitBranch,
+  FormInput,
+  RefreshCw,
+  Timer,
+  Cpu,
+  Shield,
+  Layers,
+  Star,
+  Code2,
+  ToggleLeft,
+  Eye,
+  MousePointer,
+  Route,
+  Sparkles,
+} from 'lucide-react'
+
+export const categories = ['All', 'Basics', 'Hooks', 'Forms', 'Advanced']
+
+export const topics = [
+  {
+    id: 'props',
+    title: 'Props',
+    category: 'Basics',
+    icon: Box,
+    description:
+      'Props allow data to be passed from a parent component to a child component. They are read-only and enable reusable, composable UI.',
+    workflow: {
+      purpose: 'Share data and configuration from parent to child without global state.',
+      steps: [
+        'Parent Component',
+        'Pass data using props',
+        'Child Component receives data',
+        'Child renders UI with received values',
+      ],
+      execution: [
+        'Parent defines data object or values',
+        'Parent passes them as attributes: <Child data={data} />',
+        'Child destructures props in function signature',
+        'Child uses props in JSX to render dynamic content',
+      ],
+      useCase: 'User profile cards, product listings, reusable buttons with different labels.',
+      bestPractices: [
+        'Keep props immutable in the child',
+        'Use destructuring for cleaner code',
+        'Validate props with TypeScript or PropTypes in production',
+      ],
+      mistakes: [
+        'Mutating props directly in child',
+        'Prop drilling through many levels without context',
+        'Passing too many unrelated props (split into objects)',
+      ],
+    },
+    keyPoints: {
+      why: 'Enables component reusability and one-way data flow.',
+      advantages: ['Simple data flow', 'Easy to test', 'Promotes reusable components'],
+      limitations: ['Read-only', 'Can cause prop drilling', 'No type safety without TS'],
+      interviewQuestions: [
+        'What are props in React?',
+        'Can you modify props inside a child?',
+        'Difference between props and state?',
+      ],
+    },
+    component: lazy(() => import('../components/Props/Props')),
+    codePath: '../components/Props/Props.jsx',
+  },
+  {
+    id: 'state',
+    title: 'State',
+    category: 'Basics',
+    icon: ToggleLeft,
+    description:
+      'State is local, mutable data managed inside a component. When state changes, React re-renders the component to reflect the new UI.',
+    workflow: {
+      purpose: 'Track values that change over time within a component.',
+      steps: [
+        'Initialize state with useState',
+        'User interaction triggers event',
+        'setState updates value',
+        'React re-renders with new UI',
+      ],
+      execution: [
+        'const [count, setCount] = useState(0)',
+        'Button click calls setCount(count + 1)',
+        'React schedules a re-render',
+        'Component returns updated JSX',
+      ],
+      useCase: 'Counters, toggles, form inputs, modals, tabs.',
+      bestPractices: [
+        'Use functional updates when next state depends on previous',
+        'Colocate state as close to where it is used as possible',
+        'Lift state up only when siblings need to share it',
+      ],
+      mistakes: [
+        'Mutating state directly instead of using setter',
+        'Too much state in one component',
+        'Deriving state that can be computed from existing state',
+      ],
+    },
+    keyPoints: {
+      why: 'UI must react to user actions and async data.',
+      advantages: ['Local encapsulation', 'Predictable updates via setters', 'Triggers re-render'],
+      limitations: ['Async batching can surprise beginners', 'Lifting state adds complexity'],
+      interviewQuestions: [
+        'What is state vs props?',
+        'Why does React re-render on state change?',
+        'What is lifting state up?',
+      ],
+    },
+    component: lazy(() => import('../components/State/State')),
+    codePath: '../components/State/State.jsx',
+  },
+  {
+    id: 'conditional-rendering',
+    title: 'Conditional Rendering',
+    category: 'Basics',
+    icon: Eye,
+    description:
+      'Render different UI based on conditions using if/else, ternary operators, logical &&, or switch statements inside JSX.',
+    workflow: {
+      purpose: 'Show or hide UI elements based on application state.',
+      steps: [
+        'Component holds condition in state',
+        'User action updates condition',
+        'JSX evaluates condition',
+        'Matching branch renders',
+      ],
+      execution: [
+        'isLoggedIn state determines view',
+        'Ternary picks between welcome vs login message',
+        '&& operator renders element only when truthy',
+        'Button toggles condition on click',
+      ],
+      useCase: 'Auth gates, loading states, empty lists, feature flags.',
+      bestPractices: [
+        'Extract complex conditions into variables',
+        'Prefer early returns for large branches',
+        'Keep conditions readable with named booleans',
+      ],
+      mistakes: [
+        'Using && with number 0 (renders "0")',
+        'Deeply nested ternaries',
+        'Duplicating markup across branches',
+      ],
+    },
+    keyPoints: {
+      why: 'Most UIs change based on user role, data, or loading status.',
+      advantages: ['Declarative UI', 'No manual DOM manipulation', 'Co-located with component logic'],
+      limitations: ['Complex conditions hurt readability'],
+      interviewQuestions: [
+        'Ways to conditionally render in React?',
+        'What happens with {0 && <Component />}?',
+        'When to use early return vs ternary?',
+      ],
+    },
+    component: lazy(() => import('../components/Small Topics/Conditional_Rendering')),
+    codePath: '../components/Small Topics/Conditional_Rendering.jsx',
+  },
+  {
+    id: 'controlled-components',
+    title: 'Controlled Components',
+    category: 'Forms',
+    icon: FormInput,
+    description:
+      'Form elements whose values are controlled by React state. Every keystroke updates state, making React the single source of truth.',
+    workflow: {
+      purpose: 'Full control over form input values and validation.',
+      steps: [
+        'Create state for each field',
+        'Bind value={state} to input',
+        'onChange updates state',
+        'Submit reads from state',
+      ],
+      execution: [
+        'useState holds name, email, password',
+        'Inputs use value and onChange',
+        'Form onSubmit prevents default',
+        'State reset after successful submit',
+      ],
+      useCase: 'Registration forms, search filters, settings panels.',
+      bestPractices: [
+        'Single handler with name attribute pattern',
+        'Validate on blur or submit',
+        'Disable submit while invalid',
+      ],
+      mistakes: [
+        'Forgetting onChange on controlled input (frozen field)',
+        'Mixing defaultValue with value',
+        'Not preventing default on submit',
+      ],
+    },
+    keyPoints: {
+      why: 'Predictable form state enables validation and instant UI feedback.',
+      advantages: ['Easy validation', 'Instant UI sync', 'Testable state'],
+      limitations: ['More boilerplate', 'Re-render on every keystroke'],
+      interviewQuestions: [
+        'What is a controlled component?',
+        'Controlled vs uncontrolled?',
+        'How do you handle multiple inputs?',
+      ],
+    },
+    component: lazy(() => import('../components/1.ControlledComp')),
+    codePath: '../components/1.ControlledComp.jsx',
+  },
+  {
+    id: 'uncontrolled-components',
+    title: 'Uncontrolled Components',
+    category: 'Forms',
+    icon: MousePointer,
+    description:
+      'Form inputs managed by the DOM via refs. React reads values when needed (e.g., on submit) instead of on every keystroke.',
+    workflow: {
+      purpose: 'Integrate with non-React libraries or reduce re-renders on large forms.',
+      steps: [
+        'Create refs for inputs',
+        'Attach ref to DOM elements',
+        'User types freely in DOM',
+        'Read ref.current.value on submit',
+      ],
+      execution: [
+        'useRef creates emailRef and passwordRef',
+        'Inputs receive ref attribute',
+        'Submit handler reads ref.current.value',
+        'Values logged or sent to API',
+      ],
+      useCase: 'File inputs, quick prototypes, third-party widgets.',
+      bestPractices: [
+        'Use defaultValue for initial values',
+        'Reset via ref.current.value = ""',
+        'Prefer controlled for most React forms',
+      ],
+      mistakes: [
+        'Using both value and ref on same input',
+        'Forgetting ref on custom wrapped inputs',
+        'Assuming ref updates trigger re-renders',
+      ],
+    },
+    keyPoints: {
+      why: 'Sometimes DOM-native behavior is simpler or required.',
+      advantages: ['Less re-rendering', 'Simpler for one-off reads', 'Works with file inputs'],
+      limitations: ['Harder to validate live', 'Not the React default pattern'],
+      interviewQuestions: [
+        'When use uncontrolled components?',
+        'How to get input value with ref?',
+        'Can you mix controlled and uncontrolled?',
+      ],
+    },
+    component: lazy(() => import('../components/2.UnControlledComp')),
+    codePath: '../components/2.UnControlledComp.jsx',
+  },
+  {
+    id: 'forms',
+    title: 'Forms',
+    category: 'Forms',
+    icon: Code2,
+    description:
+      'Handle form submission in React by preventing default browser behavior, reading state or refs, and providing user feedback.',
+    workflow: {
+      purpose: 'Capture user input and process it without full page reload.',
+      steps: [
+        'User fills input fields',
+        'Submit event fires',
+        'e.preventDefault() stops reload',
+        'Process and reset form data',
+      ],
+      execution: [
+        'Controlled input bound to name state',
+        'Form onSubmit calls handler',
+        'Handler prevents default and alerts/logs',
+        'State cleared after submit',
+      ],
+      useCase: 'Contact forms, login, surveys, search.',
+      bestPractices: [
+        'Always preventDefault on React form submit',
+        'Show loading and error states',
+        'Use semantic labels and htmlFor',
+      ],
+      mistakes: [
+        'Missing preventDefault causes page refresh',
+        'Submitting without validation',
+        'Not resetting form after success',
+      ],
+    },
+    keyPoints: {
+      why: 'Forms are the primary way users send data to applications.',
+      advantages: ['SPA behavior', 'Inline validation', 'Rich UX feedback'],
+      limitations: ['Must wire up handlers manually', 'Accessibility requires attention'],
+      interviewQuestions: [
+        'How to handle form submit in React?',
+        'Why preventDefault?',
+        'Controlled form vs FormData API?',
+      ],
+    },
+    component: lazy(() => import('../components/Controller Component/ControllerComponent')),
+    codePath: '../components/Controller Component/ControllerComponent.jsx',
+  },
+  {
+    id: 'use-ref',
+    title: 'useRef',
+    category: 'Hooks',
+    icon: GitBranch,
+    description:
+      'useRef returns a mutable object that persists across renders. Commonly used to access DOM nodes or store values without causing re-renders.',
+    workflow: {
+      purpose: 'Imperatively focus inputs, measure DOM, or hold mutable values.',
+      steps: [
+        'Create ref with useRef(null)',
+        'Attach ref to JSX element',
+        'User clicks button',
+        'Call ref.current.focus()',
+      ],
+      execution: [
+        'inputRef = useRef(null)',
+        'Input receives ref={inputRef}',
+        'Click handler accesses inputRef.current',
+        'DOM method focus() runs imperatively',
+      ],
+      useCase: 'Auto-focus, scroll position, timers, previous value tracking.',
+      bestPractices: [
+        'Check ref.current before use',
+        'Do not read/write ref during render for UI',
+        'Use state when UI should update',
+      ],
+      mistakes: [
+        'Expecting ref changes to re-render',
+        'Accessing ref before mount',
+        'Overusing refs instead of state',
+      ],
+    },
+    keyPoints: {
+      why: 'Some browser APIs require direct DOM access.',
+      advantages: ['No re-render on change', 'Persists across renders', 'Simple DOM access'],
+      limitations: ['Imperative escape hatch', 'Not for derived UI data'],
+      interviewQuestions: [
+        'What is useRef used for?',
+        'Difference between ref and state?',
+        'Can refs store any value?',
+      ],
+    },
+    component: lazy(() => import('../components/Small Topics/Ref')),
+    codePath: '../components/Small Topics/Ref.jsx',
+  },
+  {
+    id: 'forward-ref',
+    title: 'forwardRef',
+    category: 'Hooks',
+    icon: Layers,
+    description:
+      'forwardRef lets a parent pass a ref to a child component so the parent can access the child\'s DOM node or imperative handle.',
+    workflow: {
+      purpose: 'Expose inner DOM elements from reusable child components.',
+      steps: [
+        'Parent creates ref',
+        'Child wrapped with forwardRef',
+        'Ref passed to inner input',
+        'Parent calls ref.current methods',
+      ],
+      execution: [
+        'Parent: const inputRef = useRef()',
+        'Child: forwardRef((props, ref) => <input ref={ref} />)',
+        'Parent passes ref={inputRef} to child',
+        'Button sets value and focus via ref',
+      ],
+      useCase: 'Design system inputs, modals with focus trap, animated components.',
+      bestPractices: [
+        'Pair with useImperativeHandle for custom APIs',
+        'Name displayName for DevTools',
+        'Document which refs are forwarded',
+      ],
+      mistakes: [
+        'Forgetting to attach ref inside forwardRef child',
+        'Using ref on function component without forwardRef',
+        'Breaking encapsulation unnecessarily',
+      ],
+    },
+    keyPoints: {
+      why: 'Function components don\'t accept refs by default.',
+      advantages: ['Reusable wrapped inputs', 'Parent control when needed', 'Library compatibility'],
+      limitations: ['Adds complexity', 'Can leak implementation details'],
+      interviewQuestions: [
+        'Why do we need forwardRef?',
+        'forwardRef vs passing callback ref?',
+        'What is useImperativeHandle?',
+      ],
+    },
+    component: lazy(() => import('../components/3.ForwardRef')),
+    codePath: '../components/3.ForwardRef.jsx',
+  },
+  {
+    id: 'use-state',
+    title: 'useState',
+    category: 'Hooks',
+    icon: Zap,
+    description:
+      'useState adds local state to functional components. It returns a state value and a setter function that triggers re-renders.',
+    workflow: {
+      purpose: 'Manage form data and UI state in functional components.',
+      steps: [
+        'Initialize state object',
+        'Handle input onChange',
+        'Update nested state immutably',
+        'Submit and reset form',
+      ],
+      execution: [
+        'useState({ userName, email, password })',
+        'handleFormValue spreads prev state',
+        'Controlled inputs reflect formData',
+        'Submit logs and clears fields',
+      ],
+      useCase: 'Multi-field forms, wizards, toggles, filters.',
+      bestPractices: [
+        'Batch related fields in one object or useReducer',
+        'Functional updates: setState(prev => ...)',
+        'Initialize lazily for expensive defaults',
+      ],
+      mistakes: [
+        'Spreading state incorrectly (lost fields)',
+        'Async state assumptions right after setState',
+        'Creating initial state on every render without function form',
+      ],
+    },
+    keyPoints: {
+      why: 'Functional components need hooks for local mutable data.',
+      advantages: ['Simple API', 'Automatic re-render', 'Works with any data type'],
+      limitations: ['Multiple useStates can get messy', 'Updates are asynchronous'],
+      interviewQuestions: [
+        'How does useState work internally?',
+        'Functional update form of setState?',
+        'useState vs useReducer?',
+      ],
+    },
+    component: lazy(() => import('../components/4.UseState')),
+    codePath: '../components/4.UseState.jsx',
+  },
+  {
+    id: 'use-effect',
+    title: 'useEffect',
+    category: 'Hooks',
+    icon: Timer,
+    description:
+      'useEffect runs side effects after render — data fetching, subscriptions, timers. Cleanup functions prevent memory leaks.',
+    workflow: {
+      purpose: 'Synchronize component with external systems (timers, APIs, DOM).',
+      steps: [
+        'Component mounts',
+        'useEffect sets interval',
+        'State updates every second',
+        'Cleanup clears interval on unmount',
+      ],
+      execution: [
+        'useState holds current time string',
+        'useEffect with [] runs once on mount',
+        'setInterval updates time every 1000ms',
+        'return () => clearInterval on cleanup',
+      ],
+      useCase: 'Data fetching, event listeners, document title, analytics.',
+      bestPractices: [
+        'Always cleanup subscriptions and timers',
+        'Specify dependency array correctly',
+        'Extract complex effects into custom hooks',
+      ],
+      mistakes: [
+        'Missing dependency array (infinite loop)',
+        'Forgetting cleanup',
+        'Fetching without abort/cancel on unmount',
+      ],
+    },
+    keyPoints: {
+      why: 'Render should be pure; side effects belong in useEffect.',
+      advantages: ['Declarative lifecycle', 'Colocated logic', 'Cleanup support'],
+      limitations: ['Dependency array pitfalls', 'Can run more than expected in Strict Mode'],
+      interviewQuestions: [
+        'What is useEffect used for?',
+        'Explain dependency array',
+        'When does cleanup run?',
+      ],
+    },
+    component: lazy(() => import('../components/5.useEffect')),
+    codePath: '../components/5.useEffect.jsx',
+  },
+  {
+    id: 'use-memo',
+    title: 'useMemo',
+    category: 'Hooks',
+    icon: Cpu,
+    description:
+      'useMemo memoizes expensive computed values. The calculation re-runs only when dependencies change, skipping work on unrelated re-renders.',
+    workflow: {
+      purpose: 'Optimize performance by caching expensive calculations.',
+      steps: [
+        'Parent holds two counters',
+        'useMemo computes isEven from counterOne',
+        'counterTwo changes skip recalculation',
+        'Memoized value returned from cache',
+      ],
+      execution: [
+        'Heavy loop runs inside useMemo callback',
+        'Dependency array [counterOne]',
+        'counterTwo increment does not re-run loop',
+        'Console shows when calculation runs',
+      ],
+      useCase: 'Filtered lists, chart data, derived statistics, sort operations.',
+      bestPractices: [
+        'Profile before optimizing',
+        'Keep dependency arrays accurate',
+        'Do not wrap everything — memo has cost',
+      ],
+      mistakes: [
+        'Memoizing cheap calculations',
+        'Wrong or missing dependencies',
+        'Expecting useMemo to prevent child re-renders (use memo/useCallback)',
+      ],
+    },
+    keyPoints: {
+      why: 'Avoid repeating expensive work on every render.',
+      advantages: ['Skips redundant computation', 'Stable derived values', 'Pairs with React.memo'],
+      limitations: ['Memory overhead', 'Not a silver bullet'],
+      interviewQuestions: [
+        'useMemo vs useCallback?',
+        'When should you NOT use useMemo?',
+        'What happens if deps are wrong?',
+      ],
+    },
+    component: lazy(() => import('../components/8.UseMemo')),
+    codePath: '../components/8.UseMemo.jsx',
+  },
+  {
+    id: 'use-memo-parent',
+    title: 'useMemo (Parent Demo)',
+    category: 'Hooks',
+    icon: Sparkles,
+    description:
+      'Another useMemo pattern: memoize a value inside a child so parent re-renders do not recalculate expensive work.',
+    workflow: {
+      purpose: 'Isolate expensive computation in child with empty dependency memo.',
+      steps: [
+        'Child defines expensive useMemo',
+        'Parent has separate count state',
+        'Parent re-render button clicked',
+        'Child calculation stays cached',
+      ],
+      execution: [
+        'ExpensiveComponent runs loop once',
+        'useMemo deps [] means run once',
+        'Parent count increments re-render parent',
+        'Child memo value reused',
+      ],
+      useCase: 'Static derived data, one-time transforms, heavy init.',
+      bestPractices: [
+        'Split expensive child into separate component',
+        'Combine with React.memo on child',
+        'Measure with React DevTools Profiler',
+      ],
+      mistakes: [
+        'Empty deps when value should update',
+        'Putting useMemo in wrong component level',
+      ],
+    },
+    keyPoints: {
+      why: 'Demonstrates memoization scope across parent/child boundaries.',
+      advantages: ['Clear separation', 'Visible perf win in demos'],
+      limitations: ['Demo uses artificial delay loop'],
+      interviewQuestions: [
+        'Where should useMemo live — parent or child?',
+        'Empty dependency array meaning?',
+      ],
+    },
+    component: lazy(() => import('../components/6.useMemo')),
+    codePath: '../components/6.useMemo.jsx',
+  },
+  {
+    id: 'react-memo',
+    title: 'React.memo',
+    category: 'Hooks',
+    icon: Shield,
+    description:
+      'React.memo is a higher-order component that prevents re-renders when props are unchanged (shallow compare).',
+    workflow: {
+      purpose: 'Skip re-rendering pure child components when parent state changes unrelated props.',
+      steps: [
+        'Parent holds count state',
+        'Child wrapped in React.memo',
+        'Parent increment changes only parent',
+        'Memoized child skips re-render',
+      ],
+      execution: [
+        'Counts = React.memo(() => ...)',
+        'Parent button updates count',
+        'Child has no props changing',
+        'Child render skipped by memo',
+      ],
+      useCase: 'List items, chart segments, heavy presentational components.',
+      bestPractices: [
+        'Use with stable props (useCallback/useMemo)',
+        'Profile before applying widely',
+        'Custom comparison for complex props',
+      ],
+      mistakes: [
+        'Memoizing everything by default',
+        'Inline objects/functions as props break memo',
+        'Shallow compare misses deep changes',
+      ],
+    },
+    keyPoints: {
+      why: 'Reduce wasted renders in large trees.',
+      advantages: ['Easy API', 'Works with function components', 'Custom comparators'],
+      limitations: ['Shallow prop compare only', 'Overhead of comparison itself'],
+      interviewQuestions: [
+        'How does React.memo work?',
+        'When does memo not help?',
+        'memo vs PureComponent?',
+      ],
+    },
+    component: lazy(() => import('../components/7.React.Memo')),
+    codePath: '../components/7.React.Memo.jsx',
+  },
+  {
+    id: 'use-callback',
+    title: 'useCallback',
+    category: 'Hooks',
+    icon: RefreshCw,
+    description:
+      'useCallback returns a memoized callback that only changes when dependencies change. Essential when passing functions to memoized children.',
+    workflow: {
+      purpose: 'Keep function reference stable so React.memo children skip re-render.',
+      steps: [
+        'Parent memoizes handler with useCallback',
+        'Child wrapped in memo receives handler',
+        'Parent count changes',
+        'Child does not re-render (stable handler)',
+      ],
+      execution: [
+        'childHandler = useCallback(fn, [])',
+        'Child is memo(Child)',
+        'Parent count button updates parent only',
+        'Console shows child render only when needed',
+      ],
+      useCase: 'Event handlers to list items, debounced search, callback props.',
+      bestPractices: [
+        'Use empty deps when handler needs no closed values',
+        'Pair with React.memo on receiving child',
+        'Do not wrap every function',
+      ],
+      mistakes: [
+        'Wrong dependency array recreates function anyway',
+        'useCallback without memoized child (no benefit)',
+        'Including unstable objects in deps',
+      ],
+    },
+    keyPoints: {
+      why: 'New function references on each render break memo optimization.',
+      advantages: ['Stable references', 'Enables memo optimization', 'Prevents effect re-runs'],
+      limitations: ['Memory for cached functions', 'Dependency management'],
+      interviewQuestions: [
+        'useCallback vs useMemo?',
+        'When is useCallback useless?',
+        'How does it interact with React.memo?',
+      ],
+    },
+    component: lazy(() => import('../components/UseCallback/UseCallback')),
+    codePath: '../components/UseCallback/Parent.jsx',
+  },
+  {
+    id: 'custom-hook',
+    title: 'Custom Hooks',
+    category: 'Hooks',
+    icon: Star,
+    description:
+      'Custom hooks extract reusable stateful logic. They follow the "use" naming convention and can compose built-in hooks.',
+    workflow: {
+      purpose: 'Share toggle logic across multiple components without duplication.',
+      steps: [
+        'Define useToggle hook',
+        'Hook returns [value, toggleValue]',
+        'Component calls useToggle(true)',
+        'Buttons show/hide/toggle content',
+      ],
+      execution: [
+        'useState holds boolean value',
+        'toggleValue accepts boolean or toggles',
+        'CustomeHook uses two useToggle instances',
+        'Independent state per hook call',
+      ],
+      useCase: 'useFetch, useLocalStorage, useDebounce, useMediaQuery.',
+      bestPractices: [
+        'Prefix with "use"',
+        'Only call hooks at top level',
+        'Return stable API [value, actions]',
+      ],
+      mistakes: [
+        'Calling hooks conditionally inside custom hook',
+        'Not extracting when logic repeats 3+ times',
+        'Returning too many unrelated values',
+      ],
+    },
+    keyPoints: {
+      why: 'DRY principle for stateful logic across components.',
+      advantages: ['Reusable', 'Testable in isolation', 'Composable'],
+      limitations: ['Rules of hooks still apply', 'Can hide complexity'],
+      interviewQuestions: [
+        'What is a custom hook?',
+        'Can custom hooks accept parameters?',
+        'Rules of hooks in custom hooks?',
+      ],
+    },
+    component: lazy(() => import('../components/CustomeHook/CustomeHook')),
+    codePath: '../components/CustomeHook/CustomeHook.jsx',
+  },
+  {
+    id: 'lazy-loading',
+    title: 'Lazy Loading',
+    category: 'Advanced',
+    icon: Layers,
+    description:
+      'React.lazy and Suspense code-split components so they load only when needed, reducing initial bundle size.',
+    workflow: {
+      purpose: 'Defer loading non-critical UI until user requests it.',
+      steps: [
+        'Define lazy(() => import("./Component"))',
+        'User clicks load button',
+        'State triggers render of lazy component',
+        'Suspense shows fallback while chunk loads',
+      ],
+      execution: [
+        'Values = lazy(() => import("./Values"))',
+        'load state starts false',
+        'Button sets load true',
+        'Suspense fallback then Values renders',
+      ],
+      useCase: 'Route-based splitting, modals, heavy charts, admin panels.',
+      bestPractices: [
+        'Split by route first',
+        'Meaningful Suspense fallback',
+        'Error boundaries for failed loads',
+      ],
+      mistakes: [
+        'Lazy loading tiny components (overhead)',
+        'Missing Suspense boundary',
+        'Default export required for lazy',
+      ],
+    },
+    keyPoints: {
+      why: 'Faster initial page load and better Core Web Vitals.',
+      advantages: ['Smaller initial bundle', 'On-demand loading', 'Built into React'],
+      limitations: ['Loading flash without good fallback', 'SSR complexity'],
+      interviewQuestions: [
+        'How does React.lazy work?',
+        'What is Suspense for?',
+        'Lazy loading vs dynamic import difference?',
+      ],
+    },
+    component: lazy(() => import('../components/Lazy Loading/LazyLoading')),
+    codePath: '../components/Lazy Loading/LazyLoading.jsx',
+  },
+  {
+    id: 'protected-routing',
+    title: 'Protected Routing',
+    category: 'Advanced',
+    icon: Route,
+    description:
+      'Protect routes by checking authentication (e.g., token in localStorage) and redirecting unauthenticated users to login.',
+    workflow: {
+      purpose: 'Restrict pages like dashboard or profile to logged-in users only.',
+      steps: [
+        'User visits /About',
+        'ProtectedRoute checks token',
+        'No token → redirect to /Login',
+        'Login sets token → access granted',
+      ],
+      execution: [
+        'ProtectedRouteFunction reads localStorage token',
+        'Navigate to /Login if missing',
+        'Login form sets token on submit',
+        'Protected pages render children',
+      ],
+      useCase: 'SaaS apps, admin panels, user dashboards.',
+      bestPractices: [
+        'Use HTTP-only cookies for real auth',
+        'Refresh tokens securely',
+        'Handle token expiry',
+      ],
+      mistakes: [
+        'Storing sensitive tokens in localStorage (XSS risk)',
+        'Client-only protection without server checks',
+        'Nested routers causing conflicts',
+      ],
+    },
+    keyPoints: {
+      why: 'Not all pages should be public in real applications.',
+      advantages: ['Declarative route guards', 'Composable wrapper pattern'],
+      limitations: ['Client guard is not security alone', 'Needs backend validation'],
+      interviewQuestions: [
+        'How to implement protected routes in React Router?',
+        'Where to store auth token?',
+        'Difference between Navigate and redirect?',
+      ],
+    },
+    component: lazy(() => import('../pages/ProtectedRoutingDemo')),
+    codePath: '../components/Protected Routing/ProtectedRouter.jsx',
+  },
+]
+
+export function getTopicById(id) {
+  return topics.find((t) => t.id === id)
+}
+
+export function getTopicIndex(id) {
+  return topics.findIndex((t) => t.id === id)
+}

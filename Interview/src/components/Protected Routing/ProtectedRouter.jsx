@@ -10,6 +10,7 @@ function ProtectedRouter() {
    return(
     <>
     <BrowserRouter>
+
     <Header/>
       <Routes>
         <Route path={'/'} element={<Home/>}></Route>

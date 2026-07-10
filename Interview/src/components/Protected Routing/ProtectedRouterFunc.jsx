@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
  
 
@@ -7,7 +6,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 
   const token = localStorage.getItem('token')
   if(!token){
-    return <Navigate to='/Login'></Navigate>
+    return <Navigate to="/login" />
   }
   return(
     children
