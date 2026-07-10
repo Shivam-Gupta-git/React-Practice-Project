@@ -10,7 +10,7 @@ import ProtectedRouteFunction from '../components/Protected Routing/ProtectedRou
 export default function ProtectedRoutingDemo() {
   return (
     <MemoryRouter initialEntries={['/']}>
-      <div className="min-h-[400px] bg-linear-to-br from-amber-50 to-amber-100 dark:from-slate-800 dark:to-slate-900">
+      <div className="min-h-100 bg-linear-to-br from-amber-50 to-amber-100 dark:from-slate-800 dark:to-slate-900">
         <Header />
         <Routes>
           <Route path="/" element={<Home />} />
