@@ -36,7 +36,7 @@ function App() {
      {/* <LazyLoading/> */}
      {/* <UseMemoExample/> */}
      {/* <UseCallbackExample/> */}
-     {/* <Props/> */}
+     <Props/>
      <State/>
      <Conditional_Rendering/>
      <ControllerComponent/>

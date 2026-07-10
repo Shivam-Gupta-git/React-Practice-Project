@@ -10,7 +10,10 @@ function Props() {
 
   /*-------- Parents Component -----------*/
   return (
-    <div className="min-h-screen flex items-center justify-center  p-5">
+    <div className="min-h-screen flex items-center justify-center  py-5 bg-gray-200 flex-col">
+      <div className="w-full bg-indigo-300 flex items-center justify-center p-2">
+      <h1 className=" text-2xl font-bold text-white">Example of Props......</h1>
+      </div>
       <ChildComponent data={data} />
     </div>
   );
@@ -19,7 +22,7 @@ function Props() {
 /*-------- Child Component ----------*/ 
 function ChildComponent({ data }) {
   return (
-    <div className="w-96 bg-gray-200 rounded-2xl shadow-2xl overflow-hidden hover:scale-105 transition duration-300">
+    <div className="w-96 bg-gray-200 rounded-2xl shadow-2xl overflow-hidden hover:scale-105 transition duration-300 mt-10">
       {/* Header */}
       <div className="bg-indigo-200 py-8 flex flex-col items-center">
         <img
