@@ -15,6 +15,8 @@ import UseCallbackExample from './components/UseCallback/UseCallback'
 import Props from './components/Props/props'
 import State from './components/State/State'
 import Conditional_Rendering from './components/Small Topics/Conditional_Rendering'
+import ControllerComponent from './components/Controller Component/ControllerComponent'
+import Ref from './components/Small Topics/Ref'
 
 function App() {
 
@@ -37,6 +39,8 @@ function App() {
      {/* <Props/> */}
      <State/>
      <Conditional_Rendering/>
+     <ControllerComponent/>
+     <Ref/>
     </div>
     </>
   )
