@@ -3,7 +3,6 @@ import { DashboardProvider } from '../context/DashboardContext'
 import Sidebar from './Sidebar'
 import Navbar from './Navbar'
 import TopicPage from './TopicPage'
-import Toast from './Toast'
 import ScrollToTop from './ScrollToTop'
 import LoadingSpinner from './LoadingSpinner'
 
@@ -19,7 +18,6 @@ function LayoutContent() {
           </Suspense>
         </main>
       </div>
-      <Toast />
       <ScrollToTop />
     </div>
   )

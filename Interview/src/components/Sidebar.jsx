@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { useDashboard } from '../context/DashboardContext'
 import { categories } from '../data/topics'
 import {
@@ -8,6 +9,7 @@ import {
   Star,
   CheckCircle2,
   ChevronRight,
+  Code2,
 } from 'lucide-react'
 
 export default function Sidebar() {
@@ -108,6 +110,19 @@ export default function Sidebar() {
               aria-label="Search topics"
             />
           </div>
+        </div>
+
+        {/* Code Practice link */}
+        <div className="px-4 pt-3">
+          <Link
+            to="/practice"
+            onClick={() => setSidebarOpen(false)}
+            className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-sm font-medium bg-linear-to-r from-indigo-500 to-purple-500 text-white shadow-md shadow-indigo-500/25 hover:shadow-lg transition"
+          >
+            <Code2 className="w-4 h-4" />
+            Code Practice
+            <ChevronRight className="w-4 h-4 ml-auto opacity-70" />
+          </Link>
         </div>
 
         {/* Category filters */}
