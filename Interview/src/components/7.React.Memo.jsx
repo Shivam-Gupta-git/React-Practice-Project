@@ -1,78 +1,81 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from 'react'
+import { Shield, ShieldCheck, RefreshCw, Zap } from 'lucide-react'
 
-// Memoized Child Component
-const Counts = React.memo(() => {
-  const renderCount = useRef(0);
-
-  // Count how many times this component renders
-  renderCount.current++;
-
-  console.log("Child Rendered");
-
+// Standard Un-memoized Child
+const StandardChild = ({ count }) => {
   return (
-    <div className="bg-white rounded-2xl shadow-md p-6 text-center">
-      <h2 className="text-xl font-semibold text-gray-800">
-        Memoized Child Component
-      </h2>
-
-      <p className="text-gray-500 mt-2">
-        This component will not re-render when the parent state changes.
-      </p>
-
-      <div className="mt-5 bg-green-100 rounded-xl p-4">
-        <h1 className="text-5xl font-bold text-green-600">
-          {renderCount.current}
-        </h1>
-
-        <p className="text-gray-600 mt-2">
-          Child Render Count
-        </p>
+    <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-300 space-y-1">
+      <div className="flex items-center justify-between text-xs font-bold font-sans">
+        <span>Standard Component</span>
+        <span className="text-[10px] bg-rose-950/60 px-2 py-0.5 rounded border border-rose-800/60 text-rose-300 font-mono">
+          Re-renders Always
+        </span>
       </div>
+      <p className="text-xs text-slate-300 font-mono">
+        Value: <strong className="text-white">{count}</strong>
+      </p>
     </div>
-  );
-});
+  )
+}
 
-function ReactMemo() {
-  const [count, setCount] = useState(0);
+// Memoized Child with React.memo
+const MemoizedChild = React.memo(({ staticTitle }) => {
+  return (
+    <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 space-y-1">
+      <div className="flex items-center justify-between text-xs font-bold font-sans">
+        <span className="flex items-center gap-1.5 text-emerald-400">
+          <ShieldCheck className="w-4 h-4" /> React.memo(Child)
+        </span>
+        <span className="text-[10px] bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800/60 text-emerald-300 font-mono">
+          Props Unchanged ✓
+        </span>
+      </div>
+      <p className="text-xs text-slate-300 font-mono">
+        Static Title: <strong className="text-white">{staticTitle}</strong>
+      </p>
+    </div>
+  )
+})
+
+export default function ReactMemoDemo() {
+  const [parentCount, setParentCount] = useState(0)
 
   return (
-    <div className="min-h-screen bg-gray-800 flex flex-col items-center py-10">
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+        {/* Parent Controls */}
+        <div className="md:col-span-6 p-6 rounded-3xl bg-white/70 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-xl shadow-xl space-y-5">
+          <div className="space-y-1 border-b border-slate-200/60 dark:border-slate-800/60 pb-3">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <Shield className="w-4 h-4 text-indigo-500" />
+              React.memo HOC Demonstration
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Shallowly compares props to prevent unnecessary child re-renders.
+            </p>
+          </div>
 
-
-      {/* Main Card */}
-      <div className="bg-white rounded-3xl shadow-2xl p-8 w-full max-w-lg">
-
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
-          Parent Component
-        </h2>
-
-        {/* Parent Counter */}
-        <div className="bg-indigo-100 rounded-2xl p-6 text-center">
-
-          <p className="text-gray-500">
-            Parent Counter
-          </p>
-
-          <h1 className="text-5xl font-bold text-indigo-600 my-4">
-            {count}
-          </h1>
+          <div className="p-4 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/30 border border-indigo-200/50 dark:border-indigo-800/40 text-center space-y-2">
+            <span className="text-xs font-bold text-slate-500">Parent State Counter</span>
+            <div className="text-4xl font-extrabold font-mono text-indigo-500">{parentCount}</div>
+          </div>
 
           <button
-            onClick={() => setCount(count + 1)}
-            className="bg-indigo-600 text-white px-6 py-3 rounded-xl hover:bg-indigo-700 active:scale-95 transition"
+            type="button"
+            onClick={() => setParentCount((c) => c + 1)}
+            className="w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-indigo-600/20 transition"
           >
-            Increment Parent
+            <RefreshCw className="w-4 h-4" />
+            <span>Increment Parent State ({parentCount})</span>
           </button>
         </div>
 
-        {/* Child */}
-        <div className="mt-8">
-          <Counts />
+        {/* Side-by-Side Child Components */}
+        <div className="md:col-span-6 space-y-4">
+          <StandardChild count={parentCount} />
+          <MemoizedChild staticTitle="Fixed Header Banner" />
         </div>
-
       </div>
     </div>
-  );
+  )
 }
-
-export default ReactMemo;

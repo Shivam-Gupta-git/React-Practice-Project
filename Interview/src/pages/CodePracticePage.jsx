@@ -13,7 +13,7 @@ import {
   Moon,
   Sun,
 } from 'lucide-react'
-import { useDashboard } from '../context/DashboardContext'
+import { useDashboard } from '../hooks/useDashboard'
 import CodeEditorPanel from '../components/CodePractice/CodeEditorPanel'
 import OutputPanel from '../components/CodePractice/OutputPanel'
 import TestResultsPanel from '../components/CodePractice/TestResultsPanel'
@@ -29,6 +29,8 @@ import {
   fetchHealth,
 } from '../services/codePracticeApi'
 
+import { FALLBACK_PROBLEMS, getFallbackProblem } from '../data/fallbackProblems'
+
 const TABS = [
   { id: 'output', label: 'Output', icon: Terminal },
   { id: 'tests', label: 'Test Results', icon: ListChecks },
@@ -39,13 +41,13 @@ const TABS = [
 export default function CodePracticePage() {
   const { theme, toggleTheme, showToast } = useDashboard()
 
-  // Problem & editor state
-  const [problems, setProblems] = useState([])
-  const [selectedProblemId, setSelectedProblemId] = useState('')
-  const [problem, setProblem] = useState(null)
+  // Problem & editor state — initialized with fallback problems so editor is never empty
+  const [problems, setProblems] = useState(FALLBACK_PROBLEMS)
+  const [selectedProblemId, setSelectedProblemId] = useState(FALLBACK_PROBLEMS[0].id)
+  const [problem, setProblem] = useState(FALLBACK_PROBLEMS[0])
   const [language, setLanguage] = useState('javascript')
-  const [code, setCode] = useState('')
-  const [customInput, setCustomInput] = useState('')
+  const [code, setCode] = useState(FALLBACK_PROBLEMS[0].starterCode.javascript)
+  const [customInput, setCustomInput] = useState(FALLBACK_PROBLEMS[0].examples[0].input)
 
   // Results state
   const [activeTab, setActiveTab] = useState('output')
@@ -67,19 +69,18 @@ export default function CodePracticePage() {
   useEffect(() => {
     fetchProblems()
       .then((data) => {
-        setProblems(data.problems)
-        if (data.problems.length > 0) {
-          setSelectedProblemId(data.problems[0].id)
+        if (data.problems?.length > 0) {
+          setProblems(data.problems)
         }
       })
-      .catch(() => showToast('Failed to load problems. Is the backend running?', 'error'))
+      .catch(() => {})
 
     fetchHealth()
       .then((data) => setServices(data.services))
       .catch(() => {})
-  }, [showToast])
+  }, [])
 
-  // Load problem details when selection changes (language handled separately)
+  // Load problem details when selection changes
   useEffect(() => {
     if (!selectedProblemId) return
 
@@ -93,9 +94,17 @@ export default function CodePracticePage() {
         setExplanation(null)
         setAnalysis(null)
       })
-      .catch(() => showToast('Failed to load problem details', 'error'))
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- only reload on problem change
-  }, [selectedProblemId, showToast])
+      .catch(() => {
+        const fallback = getFallbackProblem(selectedProblemId)
+        setProblem(fallback)
+        setCode(fallback.starterCode[language] || '')
+        setCustomInput(fallback.examples?.[0]?.input || '')
+        setRunResult(null)
+        setTestResult(null)
+        setExplanation(null)
+        setAnalysis(null)
+      })
+  }, [selectedProblemId, language])
 
   // Update starter code when language changes
   const handleLanguageChange = useCallback(
@@ -113,11 +122,11 @@ export default function CodePracticePage() {
   const handleResetCode = () => {
     if (problem?.starterCode?.[language]) {
       setCode(problem.starterCode[language])
-      showToast('Code reset to starter template')
+      showToast(`Code reset to ${language.toUpperCase()} starter template`)
     }
   }
 
-  const handleRun = async () => {
+  const handleRun = useCallback(async () => {
     setLoadingRun(true)
     setRunResult(null)
     setActiveTab('output')
@@ -130,7 +139,19 @@ export default function CodePracticePage() {
     } finally {
       setLoadingRun(false)
     }
-  }
+  }, [code, language, customInput, showToast])
+
+  // Global Cmd+Enter / Ctrl+Enter shortcut to run code
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+        e.preventDefault()
+        handleRun()
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [handleRun])
 
   const handleTest = async () => {
     setLoadingTest(true)
@@ -196,76 +217,85 @@ export default function CodePracticePage() {
   const monacoLanguage = LANGUAGES.find((l) => l.id === language)?.monaco || 'javascript'
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-50 via-indigo-50/40 to-purple-50/30 dark:from-slate-950 dark:via-indigo-950/40 dark:to-purple-950/20">
-      {/* Top bar */}
-      <header className="sticky top-0 z-30 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-700/60">
-        <div className="flex items-center justify-between px-4 sm:px-6 py-3 max-w-[1600px] mx-auto">
-          <div className="flex items-center gap-3">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300 relative">
+      {/* Background ambient gradient glow */}
+      <div className="fixed inset-0 pointer-events-none z-0 opacity-30 dark:opacity-15 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-300 via-transparent to-purple-300 dark:from-indigo-900 dark:to-purple-950" />
+
+      {/* Top Header Navigation */}
+      <header className="sticky top-0 z-30 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/80 dark:border-slate-800/80 shadow-xs relative z-10">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3 max-w-[1650px] mx-auto gap-4">
+          <div className="flex items-center gap-4 min-w-0">
             <Link
               to="/"
-              className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-indigo-600 transition"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition bg-slate-100/70 dark:bg-slate-800/70 px-3 py-1.5 rounded-xl border border-slate-200/50 dark:border-slate-700/50"
             >
               <ChevronLeft className="w-4 h-4" />
-              <span className="hidden sm:inline">Back to Dashboard</span>
+              <span className="hidden sm:inline">Back to Curriculum</span>
             </Link>
-            <div className="flex items-center gap-2">
-              <div className="p-2 rounded-xl bg-indigo-500 text-white">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center shadow-lg shadow-indigo-500/25 shrink-0">
                 <Code2 className="w-5 h-5" />
               </div>
-              <div>
-                <h1 className="text-base font-bold text-slate-900 dark:text-white">Code Practice</h1>
-                <p className="text-xs text-slate-500">Interactive coding module</p>
+              <div className="min-w-0">
+                <h1 className="text-base font-bold text-slate-900 dark:text-white tracking-tight truncate">
+                  Code Practice IDE
+                </h1>
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium hidden sm:block">Interactive Algorithm Execution & AI Tutor</p>
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             {/* Service status indicators */}
-            <span
-              className={`hidden sm:inline text-xs px-2 py-0.5 rounded-full ${
-                services.judge0
-                  ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300'
-                  : 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300'
-              }`}
-              title="Judge0 code execution service"
-            >
-              Judge0 {services.judge0 ? '✓' : '✗'}
-            </span>
-            <span
-              className={`hidden sm:inline text-xs px-2 py-0.5 rounded-full ${
-                services.llm
-                  ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300'
-                  : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'
-              }`}
-              title="LLM for explanations"
-            >
-              AI {services.llm ? '✓' : 'fallback'}
-            </span>
+            <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-100/70 dark:bg-slate-800/70 border border-slate-200/50 dark:border-slate-700/50 text-[11px] font-semibold">
+              <span className="text-slate-500 dark:text-slate-400">Execution:</span>
+              <span
+                className={`flex items-center gap-1 ${
+                  services.judge0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'
+                }`}
+              >
+                <span className={`w-2 h-2 rounded-full ${services.judge0 ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+                {services.judge0 ? 'Judge0 Cloud' : 'Local Sandbox'}
+              </span>
+            </div>
+
+            <div className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-100/70 dark:bg-slate-800/70 border border-slate-200/50 dark:border-slate-700/50 text-[11px] font-semibold">
+              <span className="text-slate-500 dark:text-slate-400">AI Intelligence:</span>
+              <span
+                className={`flex items-center gap-1 ${
+                  services.llm ? 'text-emerald-600 dark:text-emerald-400' : 'text-indigo-600 dark:text-indigo-400'
+                }`}
+              >
+                <span className={`w-2 h-2 rounded-full ${services.llm ? 'bg-emerald-500' : 'bg-indigo-500'}`} />
+                {services.llm ? 'Active' : 'Offline Guide'}
+              </span>
+            </div>
+
             <button
               type="button"
               onClick={toggleTheme}
-              className="p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+              className="p-2 rounded-xl text-slate-500 dark:text-slate-400 bg-slate-100/70 dark:bg-slate-800/70 hover:bg-slate-200/80 dark:hover:bg-slate-700/80 border border-slate-200/50 dark:border-slate-700/50 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
               aria-label="Toggle theme"
             >
-              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-600" />}
             </button>
           </div>
         </div>
       </header>
 
-      <main className="max-w-[1600px] mx-auto p-4 sm:p-6">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6">
-          {/* Left: Problem description */}
+      <main className="max-w-[1650px] mx-auto p-4 sm:p-6 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6">
+          {/* Left Column: Problem description */}
           <aside className="lg:col-span-3 space-y-4">
             {/* Problem selector */}
-            <div className="rounded-2xl bg-white/60 dark:bg-slate-800/40 backdrop-blur-md border border-white/50 dark:border-slate-700/50 p-4 shadow-sm">
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
-                Problem
+            <div className="rounded-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl border border-slate-200/80 dark:border-slate-800/80 p-4 shadow-md">
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
+                Select Problem
               </label>
               <select
                 value={selectedProblemId}
                 onChange={(e) => setSelectedProblemId(e.target.value)}
-                className="w-full px-3 py-2 text-sm rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+                className="w-full px-3.5 py-2 text-xs font-semibold rounded-xl bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition cursor-pointer"
               >
                 {problems.map((p) => (
                   <option key={p.id} value={p.id}>
@@ -275,40 +305,51 @@ export default function CodePracticePage() {
               </select>
             </div>
 
-            {/* Problem details */}
+            {/* Problem details card */}
             {problem && (
-              <div className="rounded-2xl bg-white/60 dark:bg-slate-800/40 backdrop-blur-md border border-white/50 dark:border-slate-700/50 p-4 shadow-sm">
-                <div className="flex items-center gap-2 mb-2">
-                  <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">
-                    {problem.title}
-                  </h2>
-                  <span
-                    className={`text-xs px-2 py-0.5 rounded-full font-medium ${DIFFICULTY_COLORS[problem.difficulty]}`}
-                  >
-                    {problem.difficulty}
-                  </span>
+              <div className="rounded-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl border border-slate-200/80 dark:border-slate-800/80 p-5 shadow-md space-y-4">
+                <div className="space-y-2 border-b border-slate-200/60 dark:border-slate-800/60 pb-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <h2 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
+                      {problem.title}
+                    </h2>
+                    <span
+                      className={`text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full ${
+                        problem.difficulty === 'Easy'
+                          ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60'
+                          : problem.difficulty === 'Medium'
+                          ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60'
+                          : 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-300 border border-rose-200 dark:border-rose-800/60'
+                      }`}
+                    >
+                      {problem.difficulty}
+                    </span>
+                  </div>
                 </div>
-                <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
                   {problem.description}
                 </p>
 
                 {problem.examples?.length > 0 && (
-                  <div className="space-y-2">
-                    <p className="text-xs font-semibold text-slate-400 uppercase">Examples</p>
+                  <div className="space-y-2.5 pt-2">
+                    <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                      Examples
+                    </p>
                     {problem.examples.map((ex, i) => (
                       <div
                         key={i}
-                        className="text-xs font-mono p-2 rounded-lg bg-slate-50 dark:bg-slate-900/50"
+                        className="text-xs font-mono p-3 rounded-xl bg-slate-100/60 dark:bg-slate-950/60 border border-slate-200/50 dark:border-slate-800/50 space-y-1"
                       >
                         <div>
-                          <span className="text-slate-400">Input: </span>
-                          <span className="text-slate-700 dark:text-slate-300 whitespace-pre-wrap">
+                          <span className="text-slate-400 font-sans font-semibold">Input: </span>
+                          <span className="text-slate-800 dark:text-slate-200 whitespace-pre-wrap">
                             {ex.input}
                           </span>
                         </div>
                         <div>
-                          <span className="text-slate-400">Output: </span>
-                          <span className="text-emerald-600 dark:text-emerald-400 whitespace-pre-wrap">
+                          <span className="text-slate-400 font-sans font-semibold">Output: </span>
+                          <span className="text-emerald-600 dark:text-emerald-400 font-bold whitespace-pre-wrap">
                             {ex.output}
                           </span>
                         </div>
@@ -320,14 +361,14 @@ export default function CodePracticePage() {
             )}
           </aside>
 
-          {/* Center: Code editor */}
+          {/* Center Column: Code Editor & Primary Controls */}
           <section className="lg:col-span-5 flex flex-col gap-3">
-            {/* Toolbar */}
-            <div className="flex flex-wrap items-center gap-2">
+            {/* Top Toolbar */}
+            <div className="flex flex-wrap items-center gap-2 p-2 rounded-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-md">
               <select
                 value={language}
                 onChange={(e) => handleLanguageChange(e.target.value)}
-                className="px-3 py-2 text-sm rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 font-medium"
+                className="px-3 py-1.5 text-xs rounded-xl bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 font-bold text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 cursor-pointer"
               >
                 {LANGUAGES.map((lang) => (
                   <option key={lang.id} value={lang.id}>
@@ -339,10 +380,11 @@ export default function CodePracticePage() {
               <button
                 type="button"
                 onClick={handleResetCode}
-                className="inline-flex items-center gap-1.5 px-3 py-2 text-sm rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl border border-slate-200/80 dark:border-slate-700/80 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+                title="Reset code template"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
-                Reset
+                <span>Reset</span>
               </button>
 
               <div className="flex-1" />
@@ -351,88 +393,91 @@ export default function CodePracticePage() {
                 type="button"
                 onClick={handleRun}
                 disabled={loadingRun}
-                className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-xl bg-emerald-500 text-white hover:bg-emerald-600 disabled:opacity-50 transition shadow-sm"
+                className="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white disabled:opacity-50 active:scale-95 transition-all shadow-md shadow-emerald-600/20"
               >
                 <Play className="w-3.5 h-3.5" />
-                Run Code
+                <span>{loadingRun ? 'Running...' : 'Run Code'}</span>
               </button>
 
               <button
                 type="button"
                 onClick={handleTest}
                 disabled={loadingTest}
-                className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-xl bg-indigo-500 text-white hover:bg-indigo-600 disabled:opacity-50 transition shadow-sm"
+                className="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white disabled:opacity-50 active:scale-95 transition-all shadow-md shadow-indigo-600/20"
               >
                 <FlaskConical className="w-3.5 h-3.5" />
-                Run Tests
+                <span>{loadingTest ? 'Testing...' : 'Submit Tests'}</span>
               </button>
             </div>
 
-            {/* Editor */}
-            <div className="flex-1 min-h-[400px] lg:min-h-[500px]">
+            {/* Monaco Editor Container */}
+            <div className="flex-1 min-h-[440px] lg:min-h-[500px]">
               <CodeEditorPanel
                 value={code}
                 onChange={setCode}
                 language={monacoLanguage}
+                onRunCode={handleRun}
               />
             </div>
 
-            {/* AI action buttons */}
+            {/* AI Tutor Actions */}
             <div className="flex flex-wrap gap-2">
               <button
                 type="button"
                 onClick={handleExplain}
                 disabled={loadingExplain}
-                className="inline-flex items-center gap-1.5 px-3 py-2 text-sm rounded-xl border border-indigo-200 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 disabled:opacity-50 transition"
+                className="flex-1 inline-flex items-center justify-center gap-2 px-3.5 py-2.5 text-xs font-bold rounded-xl border border-indigo-200 dark:border-indigo-800/80 bg-indigo-50/50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-100/60 dark:hover:bg-indigo-900/40 disabled:opacity-50 active:scale-98 transition shadow-xs"
               >
-                <BookOpen className="w-3.5 h-3.5" />
-                Explain Code
+                <BookOpen className="w-4 h-4 text-indigo-500" />
+                <span>{loadingExplain ? 'Generating Explanation...' : 'AI Code Explanation'}</span>
               </button>
               <button
                 type="button"
                 onClick={handleAnalyze}
                 disabled={loadingAnalyze}
-                className="inline-flex items-center gap-1.5 px-3 py-2 text-sm rounded-xl border border-purple-200 dark:border-purple-800 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/30 disabled:opacity-50 transition"
+                className="flex-1 inline-flex items-center justify-center gap-2 px-3.5 py-2.5 text-xs font-bold rounded-xl border border-purple-200 dark:border-purple-800/80 bg-purple-50/50 dark:bg-purple-950/30 text-purple-600 dark:text-purple-300 hover:bg-purple-100/60 dark:hover:bg-purple-900/40 disabled:opacity-50 active:scale-98 transition shadow-xs"
               >
-                <Sparkles className="w-3.5 h-3.5" />
-                Analyze Efficiency
+                <Sparkles className="w-4 h-4 text-purple-500" />
+                <span>{loadingAnalyze ? 'Analyzing...' : 'AI Efficiency Analysis'}</span>
               </button>
             </div>
           </section>
 
-          {/* Right: Output / Results panels */}
+          {/* Right Column: Console Output & Analysis Tabs */}
           <section className="lg:col-span-4">
-            <div className="rounded-2xl bg-white/60 dark:bg-slate-800/40 backdrop-blur-md border border-white/50 dark:border-slate-700/50 shadow-sm overflow-hidden">
-              {/* Tab bar */}
-              <div className="flex border-b border-slate-200/60 dark:border-slate-700/60 overflow-x-auto">
+            <div className="rounded-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-md overflow-hidden">
+              {/* Tab Navigation */}
+              <div className="flex border-b border-slate-200/80 dark:border-slate-800/80 overflow-x-auto bg-slate-50/50 dark:bg-slate-950/50">
                 {TABS.map((tab) => {
                   const Icon = tab.icon
+                  const isActive = activeTab === tab.id
                   return (
                     <button
                       key={tab.id}
                       type="button"
                       onClick={() => setActiveTab(tab.id)}
-                      className={`flex items-center gap-1.5 px-4 py-3 text-xs sm:text-sm font-medium whitespace-nowrap transition border-b-2 ${
-                        activeTab === tab.id
-                          ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400 bg-indigo-50/50 dark:bg-indigo-950/20'
-                          : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                      className={`flex items-center gap-1.5 px-4 py-3 text-xs font-bold whitespace-nowrap transition-all border-b-2 ${
+                        isActive
+                          ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400 bg-white dark:bg-slate-900 shadow-xs'
+                          : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
                       }`}
                     >
-                      <Icon className="w-3.5 h-3.5" />
-                      {tab.label}
+                      <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-indigo-500' : ''}`} />
+                      <span>{tab.label}</span>
                     </button>
                   )
                 })}
               </div>
 
-              {/* Tab content */}
-              <div className="p-4">
+              {/* Tab Body */}
+              <div className="p-4 sm:p-5">
                 {activeTab === 'output' && (
                   <OutputPanel
                     result={runResult}
                     customInput={customInput}
                     onCustomInputChange={setCustomInput}
                     loading={loadingRun}
+                    problem={problem}
                   />
                 )}
                 {activeTab === 'tests' && (

@@ -1,8 +1,18 @@
 import axios from 'axios'
+import vm from 'node:vm'
+import { execFile } from 'node:child_process'
+import fs from 'node:fs'
+import path from 'node:path'
+import os from 'node:os'
+import { promisify } from 'node:util'
+// Configurable timeout for local execution (ms). Default 10000ms (10 seconds).
+const LOCAL_EXEC_TIMEOUT_MS = process.env.LOCAL_EXEC_TIMEOUT_MS ? parseInt(process.env.LOCAL_EXEC_TIMEOUT_MS, 10) : 10000
+const execFileAsync = promisify(execFile)
 
 /**
  * Judge0 language IDs used by this project.
- * Execution is fully sandboxed inside Judge0 containers — user code never runs on our server.
+ * Execution is fully sandboxed inside Judge0 containers when Judge0 is active,
+ * or executed locally via system runtimes when Judge0 is offline.
  */
 const LANGUAGE_IDS = {
   javascript: 63,
@@ -55,6 +65,271 @@ function encodeField(value) {
   return Buffer.from(value, 'utf8').toString('base64')
 }
 
+function runJavaScriptLocally(sourceCode, stdin = '') {
+  let stdout = ''
+  let stderr = ''
+
+  const customConsole = {
+    log: (...args) => {
+      stdout += args.map((a) => (typeof a === 'object' ? JSON.stringify(a) : String(a))).join(' ') + '\n'
+    },
+    error: (...args) => {
+      stderr += args.map((a) => (typeof a === 'object' ? JSON.stringify(a) : String(a))).join(' ') + '\n'
+    },
+    warn: (...args) => {
+      stdout += args.map((a) => (typeof a === 'object' ? JSON.stringify(a) : String(a))).join(' ') + '\n'
+    },
+    info: (...args) => {
+      stdout += args.map((a) => (typeof a === 'object' ? JSON.stringify(a) : String(a))).join(' ') + '\n'
+    },
+  }
+
+  const customRequire = (moduleName) => {
+    if (moduleName === 'fs') {
+      return {
+        readFileSync: () => stdin,
+        readFileSyncUtf8: () => stdin,
+      }
+    }
+    throw new Error(`Module '${moduleName}' is restricted in local sandbox`)
+  }
+
+  const sandbox = {
+    console: customConsole,
+    require: customRequire,
+    input: stdin,
+    process: {
+      stdin: { readFileSync: () => stdin },
+      env: {},
+    },
+    Buffer,
+    setTimeout,
+    clearTimeout,
+    Math,
+    Date,
+    JSON,
+    Array,
+    Object,
+    String,
+    Number,
+    Boolean,
+    RegExp,
+    parseInt,
+    parseFloat,
+    isNaN,
+    isFinite,
+  }
+
+  const context = vm.createContext(sandbox)
+  const startTime = Date.now()
+
+  try {
+    const script = new vm.Script(sourceCode)
+    script.runInContext(context, { timeout: 3000 })
+    const elapsed = ((Date.now() - startTime) / 1000).toFixed(3)
+    return {
+      status: 'Accepted',
+      statusId: 3,
+      stdout: stdout.trimEnd(),
+      stderr: stderr.trimEnd(),
+      compileOutput: '',
+      message: '',
+      time: elapsed,
+      memory: 1024,
+      success: true,
+      error: null,
+    }
+  } catch (err) {
+    const elapsed = ((Date.now() - startTime) / 1000).toFixed(3)
+    return {
+      status: 'Runtime Error',
+      statusId: 7,
+      stdout: stdout.trimEnd(),
+      stderr: err.message,
+      compileOutput: '',
+      message: err.message,
+      time: elapsed,
+      memory: 1024,
+      success: false,
+      error: err.message,
+    }
+  }
+}
+
+import { spawn } from 'node:child_process'
+
+function runProcess(cmd, args, inputStr = '', timeoutMs = LOCAL_EXEC_TIMEOUT_MS) {
+  return new Promise((resolve, reject) => {
+    const proc = spawn(cmd, args, { stdio: ['pipe', 'pipe', 'pipe'] })
+    let stdout = ''
+    let stderr = ''
+    let killed = false
+
+    const timer = setTimeout(() => {
+      killed = true
+      proc.kill('SIGKILL')
+    }, timeoutMs)
+
+    proc.stdout.on('data', (d) => {
+      stdout += d.toString()
+    })
+    proc.stderr.on('data', (d) => {
+      stderr += d.toString()
+    })
+
+    proc.on('close', (code) => {
+      clearTimeout(timer)
+      if (killed) {
+        reject(new Error('Time Limit Exceeded (5s)'))
+      } else {
+        resolve({ code, stdout, stderr })
+      }
+    })
+
+    proc.on('error', (err) => {
+      clearTimeout(timer)
+      reject(err)
+    })
+
+    if (inputStr) {
+      proc.stdin.write(inputStr.endsWith('\n') ? inputStr : inputStr + '\n')
+    }
+    proc.stdin.end()
+  })
+}
+
+async function runLocalCode({ sourceCode, language, stdin = '' }) {
+  if (language === 'javascript') {
+    return runJavaScriptLocally(sourceCode, stdin)
+  }
+
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'code-practice-'))
+  const startTime = Date.now()
+
+  try {
+    if (language === 'python') {
+      const scriptPath = path.join(tmpDir, 'script.py')
+      fs.writeFileSync(scriptPath, sourceCode)
+
+      const { code, stdout, stderr } = await runProcess('python3', ['-u', scriptPath], stdin, 5000)
+      const elapsed = ((Date.now() - startTime) / 1000).toFixed(3)
+
+      return {
+        status: code === 0 ? 'Accepted' : 'Runtime Error',
+        statusId: code === 0 ? 3 : 7,
+        stdout: stdout.trimEnd(),
+        stderr: stderr.trimEnd(),
+        compileOutput: '',
+        message: stderr.trimEnd(),
+        time: elapsed,
+        memory: 2048,
+        success: code === 0,
+        error: code === 0 ? null : stderr.trimEnd() || 'Runtime Error',
+      }
+    }
+
+    if (language === 'cpp') {
+      const sourcePath = path.join(tmpDir, 'main.cpp')
+      const binPath = path.join(tmpDir, 'main')
+      fs.writeFileSync(sourcePath, sourceCode)
+
+      try {
+        await runProcess('g++', ['-O2', sourcePath, '-o', binPath], '', 10000)
+      } catch (compileErr) {
+        const elapsed = ((Date.now() - startTime) / 1000).toFixed(3)
+        return {
+          status: 'Compilation Error',
+          statusId: 6,
+          stdout: '',
+          stderr: compileErr.stderr || compileErr.message,
+          compileOutput: compileErr.stderr || compileErr.message,
+          message: 'Compilation failed',
+          time: elapsed,
+          memory: 0,
+          success: false,
+          error: compileErr.stderr || compileErr.message,
+        }
+      }
+
+      const { code, stdout, stderr } = await runProcess(binPath, [], stdin, 5000)
+      const elapsed = ((Date.now() - startTime) / 1000).toFixed(3)
+
+      return {
+        status: code === 0 ? 'Accepted' : 'Runtime Error',
+        statusId: code === 0 ? 3 : 7,
+        stdout: stdout.trimEnd(),
+        stderr: stderr.trimEnd(),
+        compileOutput: '',
+        message: stderr.trimEnd(),
+        time: elapsed,
+        memory: 2048,
+        success: code === 0,
+        error: code === 0 ? null : stderr.trimEnd() || 'Runtime Error',
+      }
+    }
+
+    if (language === 'java') {
+      const match = sourceCode.match(/public\s+class\s+([A-Za-z0-9_]+)/)
+      const className = match ? match[1] : 'Main'
+      const javaPath = path.join(tmpDir, `${className}.java`)
+      fs.writeFileSync(javaPath, sourceCode)
+
+      try {
+        await runProcess('javac', [javaPath], '', 10000)
+      } catch (compileErr) {
+        const elapsed = ((Date.now() - startTime) / 1000).toFixed(3)
+        return {
+          status: 'Compilation Error',
+          statusId: 6,
+          stdout: '',
+          stderr: compileErr.stderr || compileErr.message,
+          compileOutput: compileErr.stderr || compileErr.message,
+          message: 'Compilation failed',
+          time: elapsed,
+          memory: 0,
+          success: false,
+          error: compileErr.stderr || compileErr.message,
+        }
+      }
+
+      const { code, stdout, stderr } = await runProcess('java', ['-cp', tmpDir, className], stdin, 5000)
+      const elapsed = ((Date.now() - startTime) / 1000).toFixed(3)
+
+      return {
+        status: code === 0 ? 'Accepted' : 'Runtime Error',
+        statusId: code === 0 ? 3 : 7,
+        stdout: stdout.trimEnd(),
+        stderr: stderr.trimEnd(),
+        compileOutput: '',
+        message: stderr.trimEnd(),
+        time: elapsed,
+        memory: 4096,
+        success: code === 0,
+        error: code === 0 ? null : stderr.trimEnd() || 'Runtime Error',
+      }
+    }
+  } catch (err) {
+    const elapsed = ((Date.now() - startTime) / 1000).toFixed(3)
+    const isTimeout = err.message.includes('Time Limit Exceeded')
+    return {
+      status: isTimeout ? 'Time Limit Exceeded' : 'Runtime Error',
+      statusId: isTimeout ? 5 : 7,
+      stdout: '',
+      stderr: err.message,
+      compileOutput: '',
+      message: err.message,
+      time: elapsed,
+      memory: 2048,
+      success: false,
+      error: err.message,
+    }
+  } finally {
+    try {
+      fs.rmSync(tmpDir, { recursive: true, force: true })
+    } catch {}
+  }
+}
+
 /**
  * Submit code to Judge0 and poll until finished.
  */
@@ -80,11 +355,9 @@ export async function executeCode({ sourceCode, language, stdin = '' }) {
   try {
     const { data } = await client.post('/submissions?base64_encoded=true&wait=false', payload)
     submission = data
-  } catch (err) {
-    const msg = err.response?.data?.message || err.message
-    throw new Error(
-      `Judge0 unavailable. Start Judge0 with Docker or configure RapidAPI keys. Details: ${msg}`,
-    )
+  } catch (_err) {
+    // If Judge0 container or API key is not active, fallback to local system runtime execution
+    return runLocalCode({ sourceCode, language, stdin })
   }
 
   // Poll for result (max ~15 seconds)

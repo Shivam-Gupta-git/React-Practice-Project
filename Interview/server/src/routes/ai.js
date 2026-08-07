@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { explainCode, analyzeEfficiency } from '../services/llm.js'
+import { explainCode, analyzeEfficiency, generateFlashcards, generateQuiz } from '../services/llm.js'
 
 const router = Router()
 
@@ -43,6 +43,40 @@ router.post('/analyze', async (req, res) => {
     }
 
     const data = await analyzeEfficiency({ sourceCode, language, problemTitle })
+    res.json(data)
+  } catch (err) {
+    res.status(500).json({ error: err.message })
+  }
+})
+
+/**
+ * POST /api/ai/flashcards
+ * Body: { topicTitle, category? }
+ */
+router.post('/flashcards', async (req, res) => {
+  try {
+    const { topicTitle, category = 'React' } = req.body
+    if (!topicTitle?.trim()) {
+      return res.status(400).json({ error: 'topicTitle is required' })
+    }
+    const data = await generateFlashcards({ topicTitle, category })
+    res.json(data)
+  } catch (err) {
+    res.status(500).json({ error: err.message })
+  }
+})
+
+/**
+ * POST /api/ai/quiz
+ * Body: { topicTitle, category? }
+ */
+router.post('/quiz', async (req, res) => {
+  try {
+    const { topicTitle, category = 'React' } = req.body
+    if (!topicTitle?.trim()) {
+      return res.status(400).json({ error: 'topicTitle is required' })
+    }
+    const data = await generateQuiz({ topicTitle, category })
     res.json(data)
   } catch (err) {
     res.status(500).json({ error: err.message })

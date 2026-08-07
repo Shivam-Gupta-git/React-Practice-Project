@@ -1,20 +1,34 @@
-import { createContext, useContext, useCallback, useMemo, useState, useEffect } from 'react'
+import { useCallback, useMemo, useState, useEffect } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { topics, getTopicById, getTopicIndex } from '../data/topics'
+import { DashboardContext } from './createDashboardContext'
 
-const DashboardContext = createContext(null)
 
 export function DashboardProvider({ children }) {
   const [activeTopicId, setActiveTopicId] = useLocalStorage('react-dashboard-topic', topics[0].id)
   const [theme, setTheme] = useLocalStorage('react-dashboard-theme', 'light')
   const [completedTopics, setCompletedTopics] = useLocalStorage('react-dashboard-completed', [])
   const [favoriteTopics, setFavoriteTopics] = useLocalStorage('react-dashboard-favorites', [])
+  const [topicNotes, setTopicNotes] = useLocalStorage('react-dashboard-notes', {})
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('All')
   const [toast, setToast] = useState(null)
+  const [commandPaletteOpen, setCommandPaletteOpen] = useState(false)
 
   const activeTopic = getTopicById(activeTopicId) ?? topics[0]
+
+  const getTopicNote = useCallback((id) => topicNotes[id] || '', [topicNotes])
+
+  const saveTopicNote = useCallback(
+    (id, noteText) => {
+      setTopicNotes((prev) => ({
+        ...prev,
+        [id]: noteText,
+      }))
+    },
+    [setTopicNotes],
+  )
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark')
@@ -30,6 +44,7 @@ export function DashboardProvider({ children }) {
     (id) => {
       setActiveTopicId(id)
       setSidebarOpen(false)
+      setCommandPaletteOpen(false)
       window.scrollTo({ top: 0, behavior: 'smooth' })
     },
     [setActiveTopicId],
@@ -69,6 +84,11 @@ export function DashboardProvider({ children }) {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault()
+        setCommandPaletteOpen((open) => !open)
+        return
+      }
       if (e.target.matches('input, textarea, select')) return
       if (e.key === 'ArrowRight' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault()
@@ -101,6 +121,14 @@ export function DashboardProvider({ children }) {
     [completedTopics],
   )
 
+  const masteryRank = useMemo(() => {
+    if (progress >= 100) return { title: 'React Master', level: 5, icon: '👑', color: 'emerald' }
+    if (progress >= 75) return { title: 'React Specialist', level: 4, icon: '💎', color: 'purple' }
+    if (progress >= 50) return { title: 'React Practitioner', level: 3, icon: '🥇', color: 'amber' }
+    if (progress >= 25) return { title: 'React Apprentice', level: 2, icon: '🥈', color: 'cyan' }
+    return { title: 'React Novice', level: 1, icon: '🥉', color: 'indigo' }
+  }, [progress])
+
   const value = {
     topics,
     activeTopic,
@@ -110,6 +138,8 @@ export function DashboardProvider({ children }) {
     toggleTheme,
     sidebarOpen,
     setSidebarOpen,
+    commandPaletteOpen,
+    setCommandPaletteOpen,
     searchQuery,
     setSearchQuery,
     categoryFilter,
@@ -119,7 +149,11 @@ export function DashboardProvider({ children }) {
     toggleCompleted,
     favoriteTopics,
     toggleFavorite,
+    topicNotes,
+    getTopicNote,
+    saveTopicNote,
     progress,
+    masteryRank,
     goToNext,
     goToPrevious,
     toast,
@@ -129,8 +163,4 @@ export function DashboardProvider({ children }) {
   return <DashboardContext.Provider value={value}>{children}</DashboardContext.Provider>
 }
 
-export function useDashboard() {
-  const ctx = useContext(DashboardContext)
-  if (!ctx) throw new Error('useDashboard must be used within DashboardProvider')
-  return ctx
-}
+

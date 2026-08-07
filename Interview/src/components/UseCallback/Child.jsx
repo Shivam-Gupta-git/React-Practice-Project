@@ -1,28 +1,37 @@
-import React, { memo } from "react";
+import React, { memo } from 'react'
+import { ShieldCheck, Zap } from 'lucide-react'
 
 function Child({ countChild, childHandeler }) {
-  console.log("Child component rerendering");
-
   return (
-    <div className="bg-white shadow-md rounded-xl p-5 w-80 text-center space-y-3 mx-auto">
-      <h2 className="text-lg font-semibold text-gray-800">Child Component</h2>
+    <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 space-y-3 font-sans">
+      <div className="flex items-center justify-between text-xs font-bold">
+        <span className="flex items-center gap-1 text-emerald-400">
+          <ShieldCheck className="w-4 h-4" /> Memoized Child (React.memo)
+        </span>
+        <span className="text-[10px] bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800 text-emerald-300 font-mono">
+          Ref Preserved
+        </span>
+      </div>
 
-      <p className="text-gray-600 font-medium">
-        Count: <span className="text-blue-600">{countChild}</span>
-      </p>
+      <div className="flex items-center justify-between text-xs">
+        <span className="text-slate-300">Child State Value:</span>
+        <span className="font-mono font-bold text-white text-base">{countChild}</span>
+      </div>
 
       <button
+        type="button"
         onClick={childHandeler}
-        className="px-4 py-2 rounded-lg bg-purple-600 text-white font-medium hover:bg-purple-700 transition"
+        className="w-full py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-emerald-600/20 transition"
       >
-        Call Child Handler
+        <Zap className="w-3.5 h-3.5" />
+        <span>Invoke Memoized Callback</span>
       </button>
 
-      <p className="text-sm text-gray-400">
-        Check console to see if it rerenders
+      <p className="text-[11px] text-slate-400 text-center">
+        Child does NOT re-render when Parent counter updates because <code className="text-emerald-400">useCallback</code> retains function reference.
       </p>
     </div>
-  );
+  )
 }
 
-export default memo(Child);
+export default memo(Child)

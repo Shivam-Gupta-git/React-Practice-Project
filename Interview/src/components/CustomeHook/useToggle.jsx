@@ -1,19 +1,13 @@
 import { useState } from "react"
 
 const useToggle = (defaultVal) => {
- const [value, setVal] = useState(defaultVal)
+  const [value, setVal] = useState(defaultVal)
 
- function toggleValue (val){
-  // console.log(val)
-  if(typeof val != 'boolean'){
-    // console.log('if')
-    setVal(!value)
-  }else{
-    // console.log('else')
-    setVal(val)
+  function toggleValue(val) {
+    setVal((prev) => (typeof val !== 'boolean' ? !prev : val))
   }
- }
- return [value, toggleValue]
+
+  return [value, toggleValue]
 }
 
 export default useToggle

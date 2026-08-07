@@ -15,6 +15,10 @@ import useCallbackCode from '../components/UseCallback/Parent.jsx?raw'
 import customHookCode from '../components/CustomeHook/CustomeHook.jsx?raw'
 import lazyLoadingCode from '../components/Lazy Loading/LazyLoading.jsx?raw'
 import protectedRoutingCode from '../components/Protected Routing/ProtectedRouter.jsx?raw'
+import useReducerCode from '../components/UseReducer/UseReducer.jsx?raw'
+import useContextCode from '../components/UseContext/UseContextDemo.jsx?raw'
+import useImperativeHandleCode from '../components/UseImperativeHandle/UseImperativeHandleDemo.jsx?raw'
+import errorBoundaryCode from '../components/ErrorBoundary/ErrorBoundaryDemo.jsx?raw'
 
 const codeMap = {
   props: propsCode,
@@ -34,8 +38,34 @@ const codeMap = {
   'custom-hook': customHookCode,
   'lazy-loading': lazyLoadingCode,
   'protected-routing': protectedRoutingCode,
+  'use-reducer': useReducerCode,
+  'use-context': useContextCode,
+  'use-imperative-handle': useImperativeHandleCode,
+  'error-boundary': errorBoundaryCode,
 }
 
 export function getTopicCode(topicId) {
   return codeMap[topicId] ?? ''
+}
+
+export function searchAllTopicCode(query) {
+  if (!query || query.trim().length < 2) return []
+  const q = query.toLowerCase().trim()
+  const results = []
+
+  Object.entries(codeMap).forEach(([topicId, sourceCode]) => {
+    if (!sourceCode) return
+    const lines = sourceCode.split('\n')
+    lines.forEach((line, index) => {
+      if (line.toLowerCase().includes(q)) {
+        results.push({
+          topicId,
+          lineNumber: index + 1,
+          lineContent: line.trim(),
+        })
+      }
+    })
+  })
+
+  return results
 }

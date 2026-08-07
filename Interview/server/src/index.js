@@ -1,4 +1,12 @@
-import 'dotenv/config'
+import dotenv from 'dotenv'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const envPath = path.resolve(__dirname, '../.env')
+dotenv.config({ path: envPath })
+
 import express from 'express'
 import cors from 'cors'
 import rateLimit from 'express-rate-limit'
@@ -11,10 +19,20 @@ import { isLlmConfigured } from './services/llm.js'
 const app = express()
 const PORT = process.env.PORT || 3001
 
-// CORS — allow Vite dev server and production frontend
+// Debug: show which port the server will listen on
+console.log('Loaded PORT from env:', process.env.PORT, '=> listening on', PORT);
+
+const allowedOrigins = [process.env.CLIENT_ORIGIN, 'http://localhost:5173', 'http://127.0.0.1:5173'].filter(Boolean)
+
 app.use(
   cors({
-    origin: process.env.CLIENT_ORIGIN || 'http://localhost:5173',
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin) || /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin)) {
+        callback(null, true)
+      } else {
+        callback(new Error('Not allowed by CORS'))
+      }
+    },
     methods: ['GET', 'POST'],
   }),
 )
@@ -55,8 +73,8 @@ app.use((err, _req, res, _next) => {
   res.status(500).json({ error: 'Internal server error' })
 })
 
-app.listen(PORT, () => {
-  console.log(`Code Practice API running on http://localhost:${PORT}`)
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Code Practice API running on http://127.0.0.1:${PORT}`)
   console.log(`  Judge0: ${isJudge0Configured() ? 'configured' : 'NOT configured'}`)
   console.log(`  LLM:    ${isLlmConfigured() ? 'configured' : 'using fallback responses'}`)
 })

@@ -3,6 +3,7 @@ import { DashboardProvider } from './context/DashboardContext'
 import Layout from './components/Layout'
 import CodePracticePage from './pages/CodePracticePage'
 import Toast from './components/Toast'
+import CommandPalette from './components/CommandPalette'
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Route path="/practice" element={<CodePracticePage />} />
         </Routes>
         <Toast />
+        <CommandPalette />
       </BrowserRouter>
     </DashboardProvider>
   )

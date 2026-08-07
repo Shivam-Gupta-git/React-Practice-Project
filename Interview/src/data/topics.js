@@ -16,6 +16,10 @@ import {
   MousePointer,
   Route,
   Sparkles,
+  Sliders,
+  Globe,
+  Wrench,
+  AlertOctagon,
 } from 'lucide-react'
 
 export const categories = ['All', 'Basics', 'Hooks', 'Forms', 'Advanced']
@@ -25,6 +29,8 @@ export const topics = [
     id: 'props',
     title: 'Props',
     category: 'Basics',
+    difficulty: 'Beginner',
+    readTime: '3 min read',
     icon: Box,
     description:
       'Props allow data to be passed from a parent component to a child component. They are read-only and enable reusable, composable UI.',
@@ -59,9 +65,11 @@ export const topics = [
       advantages: ['Simple data flow', 'Easy to test', 'Promotes reusable components'],
       limitations: ['Read-only', 'Can cause prop drilling', 'No type safety without TS'],
       interviewQuestions: [
-        'What are props in React?',
-        'Can you modify props inside a child?',
-        'Difference between props and state?',
+        'What are props in React and how do they enable one-way data flow?',
+        'Can a child component mutate props received from a parent?',
+        'What is prop drilling and what patterns solve it (Context / Zustand)?',
+        'How does React compare props shallowly in React.memo?',
+        'How do defaultProps and TypeScript prop types prevent runtime errors?',
       ],
     },
     component: lazy(() => import('../components/Props/Props')),
@@ -71,6 +79,8 @@ export const topics = [
     id: 'state',
     title: 'State',
     category: 'Basics',
+    difficulty: 'Beginner',
+    readTime: '3 min read',
     icon: ToggleLeft,
     description:
       'State is local, mutable data managed inside a component. When state changes, React re-renders the component to reflect the new UI.',
@@ -105,9 +115,11 @@ export const topics = [
       advantages: ['Local encapsulation', 'Predictable updates via setters', 'Triggers re-render'],
       limitations: ['Async batching can surprise beginners', 'Lifting state adds complexity'],
       interviewQuestions: [
-        'What is state vs props?',
-        'Why does React re-render on state change?',
-        'What is lifting state up?',
+        'What is state in React and how does it differ from props?',
+        'Why is direct state mutation (state.count = 1) considered an anti-pattern?',
+        'How does automatic batching work in React 18 for state updates?',
+        'When should you use functional state updates: setCount(prev => prev + 1)?',
+        'What is lifting state up and when should you use it?',
       ],
     },
     component: lazy(() => import('../components/State/State')),
@@ -117,6 +129,8 @@ export const topics = [
     id: 'conditional-rendering',
     title: 'Conditional Rendering',
     category: 'Basics',
+    difficulty: 'Beginner',
+    readTime: '3 min read',
     icon: Eye,
     description:
       'Render different UI based on conditions using if/else, ternary operators, logical &&, or switch statements inside JSX.',
@@ -151,9 +165,11 @@ export const topics = [
       advantages: ['Declarative UI', 'No manual DOM manipulation', 'Co-located with component logic'],
       limitations: ['Complex conditions hurt readability'],
       interviewQuestions: [
-        'Ways to conditionally render in React?',
-        'What happens with {0 && <Component />}?',
-        'When to use early return vs ternary?',
+        'What are the 3 primary ways to conditionally render JSX in React?',
+        'Why can using logical && with numbers (0 && <List />) render 0 on screen?',
+        'How does ternary operator compare to if/else statements inside JSX?',
+        'How can you prevent a component from rendering by returning null?',
+        'How do object lookup maps simplify complex multi-branch conditional rendering?',
       ],
     },
     component: lazy(() => import('../components/Small Topics/Conditional_Rendering')),
@@ -163,6 +179,8 @@ export const topics = [
     id: 'controlled-components',
     title: 'Controlled Components',
     category: 'Forms',
+    difficulty: 'Beginner',
+    readTime: '4 min read',
     icon: FormInput,
     description:
       'Form elements whose values are controlled by React state. Every keystroke updates state, making React the single source of truth.',
@@ -197,9 +215,11 @@ export const topics = [
       advantages: ['Easy validation', 'Instant UI sync', 'Testable state'],
       limitations: ['More boilerplate', 'Re-render on every keystroke'],
       interviewQuestions: [
-        'What is a controlled component?',
-        'Controlled vs uncontrolled?',
-        'How do you handle multiple inputs?',
+        'What is a controlled component in React?',
+        'How does single source of truth benefit form validation and submission?',
+        'What happens if you set value={name} without an onChange handler?',
+        'How do you handle multiple input fields with a single onChange handler?',
+        'Controlled vs Uncontrolled components — when to choose which?',
       ],
     },
     component: lazy(() => import('../components/1.ControlledComp')),
@@ -209,6 +229,8 @@ export const topics = [
     id: 'uncontrolled-components',
     title: 'Uncontrolled Components',
     category: 'Forms',
+    difficulty: 'Intermediate',
+    readTime: '4 min read',
     icon: MousePointer,
     description:
       'Form inputs managed by the DOM via refs. React reads values when needed (e.g., on submit) instead of on every keystroke.',
@@ -255,6 +277,8 @@ export const topics = [
     id: 'forms',
     title: 'Forms',
     category: 'Forms',
+    difficulty: 'Beginner',
+    readTime: '4 min read',
     icon: Code2,
     description:
       'Handle form submission in React by preventing default browser behavior, reading state or refs, and providing user feedback.',
@@ -301,6 +325,8 @@ export const topics = [
     id: 'use-ref',
     title: 'useRef',
     category: 'Hooks',
+    difficulty: 'Intermediate',
+    readTime: '4 min read',
     icon: GitBranch,
     description:
       'useRef returns a mutable object that persists across renders. Commonly used to access DOM nodes or store values without causing re-renders.',
@@ -347,6 +373,8 @@ export const topics = [
     id: 'forward-ref',
     title: 'forwardRef',
     category: 'Hooks',
+    difficulty: 'Intermediate',
+    readTime: '5 min read',
     icon: Layers,
     description:
       'forwardRef lets a parent pass a ref to a child component so the parent can access the child\'s DOM node or imperative handle.',
@@ -393,6 +421,8 @@ export const topics = [
     id: 'use-state',
     title: 'useState',
     category: 'Hooks',
+    difficulty: 'Beginner',
+    readTime: '3 min read',
     icon: Zap,
     description:
       'useState adds local state to functional components. It returns a state value and a setter function that triggers re-renders.',
@@ -439,6 +469,8 @@ export const topics = [
     id: 'use-effect',
     title: 'useEffect',
     category: 'Hooks',
+    difficulty: 'Intermediate',
+    readTime: '5 min read',
     icon: Timer,
     description:
       'useEffect runs side effects after render — data fetching, subscriptions, timers. Cleanup functions prevent memory leaks.',
@@ -485,6 +517,8 @@ export const topics = [
     id: 'use-memo',
     title: 'useMemo',
     category: 'Hooks',
+    difficulty: 'Intermediate',
+    readTime: '5 min read',
     icon: Cpu,
     description:
       'useMemo memoizes expensive computed values. The calculation re-runs only when dependencies change, skipping work on unrelated re-renders.',
@@ -531,6 +565,8 @@ export const topics = [
     id: 'use-memo-parent',
     title: 'useMemo (Parent Demo)',
     category: 'Hooks',
+    difficulty: 'Intermediate',
+    readTime: '5 min read',
     icon: Sparkles,
     description:
       'Another useMemo pattern: memoize a value inside a child so parent re-renders do not recalculate expensive work.',
@@ -575,6 +611,8 @@ export const topics = [
     id: 'react-memo',
     title: 'React.memo',
     category: 'Hooks',
+    difficulty: 'Intermediate',
+    readTime: '4 min read',
     icon: Shield,
     description:
       'React.memo is a higher-order component that prevents re-renders when props are unchanged (shallow compare).',
@@ -621,6 +659,8 @@ export const topics = [
     id: 'use-callback',
     title: 'useCallback',
     category: 'Hooks',
+    difficulty: 'Intermediate',
+    readTime: '5 min read',
     icon: RefreshCw,
     description:
       'useCallback returns a memoized callback that only changes when dependencies change. Essential when passing functions to memoized children.',
@@ -667,6 +707,8 @@ export const topics = [
     id: 'custom-hook',
     title: 'Custom Hooks',
     category: 'Hooks',
+    difficulty: 'Intermediate',
+    readTime: '5 min read',
     icon: Star,
     description:
       'Custom hooks extract reusable stateful logic. They follow the "use" naming convention and can compose built-in hooks.',
@@ -713,6 +755,8 @@ export const topics = [
     id: 'lazy-loading',
     title: 'Lazy Loading',
     category: 'Advanced',
+    difficulty: 'Advanced',
+    readTime: '6 min read',
     icon: Layers,
     description:
       'React.lazy and Suspense code-split components so they load only when needed, reducing initial bundle size.',
@@ -759,6 +803,8 @@ export const topics = [
     id: 'protected-routing',
     title: 'Protected Routing',
     category: 'Advanced',
+    difficulty: 'Advanced',
+    readTime: '6 min read',
     icon: Route,
     description:
       'Protect routes by checking authentication (e.g., token in localStorage) and redirecting unauthenticated users to login.',
@@ -800,6 +846,198 @@ export const topics = [
     },
     component: lazy(() => import('../pages/ProtectedRoutingDemo')),
     codePath: '../components/Protected Routing/ProtectedRouter.jsx',
+  },
+  {
+    id: 'use-reducer',
+    title: 'useReducer',
+    category: 'Hooks',
+    difficulty: 'Intermediate',
+    readTime: '6 min read',
+    icon: Sliders,
+    description:
+      'useReducer handles complex component state logic using dispatch actions and a reducer function (state, action) => newState.',
+    workflow: {
+      purpose: 'Manage multi-step state transitions or complex state objects cleanly.',
+      steps: [
+        'Define initial state & reducer function',
+        'Call const [state, dispatch] = useReducer(reducer, initialState)',
+        'User event fires dispatch({ type: "ACTION", payload })',
+        'Reducer calculates next state and triggers re-render',
+      ],
+      execution: [
+        'useReducer initialized with cartReducer and items array',
+        'User clicks "Add Item" button',
+        'dispatch({ type: "ADD_ITEM", payload: newItem })',
+        'cartReducer switches on action.type and returns new state array',
+      ],
+      useCase: 'Shopping carts, complex forms, multi-step wizards, game states.',
+      bestPractices: [
+        'Keep reducer functions pure without side effects',
+        'Always return a new immutable state object or array',
+        'Group related state updates into single action dispatches',
+      ],
+      mistakes: [
+        'Mutating state directly inside reducer',
+        'Side effects like API calls inside reducer (use useEffect instead)',
+        'Not handling default case in reducer switch statement',
+      ],
+    },
+    keyPoints: {
+      why: 'When state logic becomes complex or next state depends on previous state in multiple ways.',
+      advantages: ['Predictable state transitions', 'Co-located state logic', 'Easy unit testing of pure reducer'],
+      limitations: ['More boilerplate for simple toggles'],
+      interviewQuestions: [
+        'useReducer vs useState — when to choose which?',
+        'Why must reducer functions be pure?',
+        'How does Redux relate to useReducer?',
+      ],
+    },
+    component: lazy(() => import('../components/UseReducer/UseReducer')),
+    codePath: '../components/UseReducer/UseReducer.jsx',
+  },
+  {
+    id: 'use-context',
+    title: 'useContext & Context API',
+    category: 'Hooks',
+    difficulty: 'Intermediate',
+    readTime: '5 min read',
+    icon: Globe,
+    description:
+      'useContext shares global data (like themes, user auth, or language) across the component tree without prop drilling.',
+    workflow: {
+      purpose: 'Pass data deeply through component trees without passing props at every level.',
+      steps: [
+        'Create context: const UserContext = createContext()',
+        'Wrap tree: <UserContext.Provider value={data}>',
+        'Deep child calls const data = useContext(UserContext)',
+        'Child re-renders whenever provider value updates',
+      ],
+      execution: [
+        'Top-level ThemeProvider holds theme & user state',
+        'Deeply nested UserBadge & ThemeCard import context',
+        'Components access user role and theme directly via useContext',
+        'Toggling theme or user role updates all subscribers instantly',
+      ],
+      useCase: 'Theme switcher, authentication session, localization/i18n, global app settings.',
+      bestPractices: [
+        'Split unrelated context providers to minimize unnecessary re-renders',
+        'Memoize provider value object with useMemo',
+        'Create custom hook wrapper (e.g. useAuth()) for cleaner imports',
+      ],
+      mistakes: [
+        'Using Context for frequently changing local state (causes mass re-renders)',
+        'Forgetting Provider wrapper at top level',
+        'Passing un-memoized object as provider value',
+      ],
+    },
+    keyPoints: {
+      why: 'Avoid passing props through 5+ intermediate layers that do not need the data.',
+      advantages: ['Eliminates prop drilling', 'Clean component APIs', 'Native React solution'],
+      limitations: ['All consuming components re-render when context value changes'],
+      interviewQuestions: [
+        'What is prop drilling and how does Context solve it?',
+        'How to prevent unnecessary re-renders with Context?',
+        'Context API vs Redux/Zustand?',
+      ],
+    },
+    component: lazy(() => import('../components/UseContext/UseContextDemo')),
+    codePath: '../components/UseContext/UseContextDemo.jsx',
+  },
+  {
+    id: 'use-imperative-handle',
+    title: 'useImperativeHandle',
+    category: 'Advanced',
+    difficulty: 'Advanced',
+    readTime: '6 min read',
+    icon: Wrench,
+    description:
+      'useImperativeHandle customizes the handle/instance value exposed to parent components when using forwardRef.',
+    workflow: {
+      purpose: 'Expose selective imperative methods (.focus(), .clear(), .shake()) to parent components.',
+      steps: [
+        'Child component wrapped in forwardRef((props, ref) => ...)',
+        'Child calls useImperativeHandle(ref, () => ({ customMethod }))',
+        'Parent attaches ref = useRef() to child component',
+        'Parent calls parentRef.current.customMethod()',
+      ],
+      execution: [
+        'CustomInput component defines focusInput, clearInput, and shakeInput methods',
+        'useImperativeHandle binds these methods to forwarded ref',
+        'Parent toolbar buttons invoke ref methods on user click',
+        'Child executes custom animations or DOM commands imperatively',
+      ],
+      useCase: 'Custom design system inputs, modal dialog controls, video player controls, canvas reset.',
+      bestPractices: [
+        'Use sparingly — favor declarative props whenever possible',
+        'Expose high-level intent methods rather than raw DOM element references',
+        'Always provide TypeScript/Doc definitions for imperative handle API',
+      ],
+      mistakes: [
+        'Overusing imperative handles instead of state and props',
+        'Forgetting forwardRef on the child component',
+        'Relying on imperative handles for primary data flow',
+      ],
+    },
+    keyPoints: {
+      why: 'Sometimes parents need to trigger imperative actions on encapsulated child components.',
+      advantages: ['Encapsulates DOM manipulation', 'Exposes explicit public component APIs', 'Clean escape hatch'],
+      limitations: ['Bypasses declarative React model', 'Harder to debug'],
+      interviewQuestions: [
+        'What is useImperativeHandle used for?',
+        'How does it work alongside forwardRef?',
+        'Why expose custom methods instead of direct DOM nodes?',
+      ],
+    },
+    component: lazy(() => import('../components/UseImperativeHandle/UseImperativeHandleDemo')),
+    codePath: '../components/UseImperativeHandle/UseImperativeHandleDemo.jsx',
+  },
+  {
+    id: 'error-boundary',
+    title: 'Error Boundaries',
+    category: 'Advanced',
+    difficulty: 'Advanced',
+    readTime: '6 min read',
+    icon: AlertOctagon,
+    description:
+      'Error Boundaries catch JavaScript errors anywhere in child component trees, log errors, and render fallback UI instead of crashing.',
+    workflow: {
+      purpose: 'Prevent white-screen crashes by gracefully isolating component failures.',
+      steps: [
+        'Create class component with static getDerivedStateFromError & componentDidCatch',
+        'Wrap subtree: <ErrorBoundary><ComponentTree /></ErrorBoundary>',
+        'Uncaught error in child triggers boundary',
+        'Boundary updates state and renders fallback UI card',
+      ],
+      execution: [
+        'BuggyCounter component increments count',
+        'Count reaching threshold 5 throws an intentional Error',
+        'ErrorBoundary catches error, logs stack trace, and displays recovery UI',
+        'User clicks "Reset Error Boundary" to recover component state',
+      ],
+      useCase: 'Third-party widgets, complex dashboards, dynamic plugin cards, payment forms.',
+      bestPractices: [
+        'Place boundaries strategically around independent UI widgets',
+        'Provide clear user recovery buttons (retry/reset)',
+        'Log captured errors to monitoring services (Sentry, LogRocket)',
+      ],
+      mistakes: [
+        'Assuming Error Boundaries catch async errors (setTimeout, promises) — they only catch rendering errors',
+        'Not providing a reset mechanism for transient errors',
+        'Wrapping individual small elements instead of logical UI feature boundaries',
+      ],
+    },
+    keyPoints: {
+      why: 'Uncaught JavaScript errors in React components unmount the entire app tree.',
+      advantages: ['Graceful degradation', 'Prevents total app crashes', 'Enables crash reporting'],
+      limitations: ['Must be class components (no functional hook equivalent yet)', 'Does not catch event handlers or async code'],
+      interviewQuestions: [
+        'What are Error Boundaries in React?',
+        'Which errors do Error Boundaries NOT catch?',
+        'What lifecycle methods define an Error Boundary?',
+      ],
+    },
+    component: lazy(() => import('../components/ErrorBoundary/ErrorBoundaryDemo')),
+    codePath: '../components/ErrorBoundary/ErrorBoundaryDemo.jsx',
   },
 ]
 
