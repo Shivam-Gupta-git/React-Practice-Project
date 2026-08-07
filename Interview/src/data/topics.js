@@ -1039,6 +1039,106 @@ export const topics = [
     component: lazy(() => import('../components/ErrorBoundary/ErrorBoundaryDemo')),
     codePath: '../components/ErrorBoundary/ErrorBoundaryDemo.jsx',
   },
+  {
+    id: 'use-transition',
+    title: 'useTransition & Concurrent Mode',
+    category: 'Advanced',
+    difficulty: 'Advanced',
+    readTime: '6 min read',
+    icon: Zap,
+    description:
+      'useTransition is a React 18 Hook that lets you mark state updates as non-blocking transitions, keeping typing and UI inputs responsive during heavy re-renders.',
+    workflow: {
+      purpose: 'Separate urgent user interactions (typing, clicking) from non-urgent heavy background renders.',
+      steps: [
+        'Call const [isPending, startTransition] = useTransition()',
+        'Wrap heavy state updates inside startTransition(() => setList(heavyResult))',
+        'React renders urgent state first',
+        'React renders transition in background with isPending loading feedback',
+      ],
+      execution: [
+        'User types fast into search input',
+        'Input state updates immediately (urgent)',
+        'Heavy 8,000 item list filtering runs inside startTransition',
+        'User typing remains 100% fluid without input lag',
+      ],
+      useCase: 'Filtering massive datasets, tab switching, live search auto-complete, route navigation.',
+      bestPractices: [
+        'Use useTransition only for state updates that cause noticeable UI lag',
+        'Provide visible pending feedback using isPending state',
+        'Do not wrap input value setters inside startTransition if the input itself needs to feel responsive',
+      ],
+      mistakes: [
+        'Wrapping controlled input keystroke setters in startTransition (causes delayed character display)',
+        'Using useTransition for simple fast state updates',
+        'Trying to pass async API calls directly inside startTransition without state setters',
+      ],
+    },
+    keyPoints: {
+      why: 'React 18 Concurrent Mode allows non-blocking UI rendering.',
+      advantages: ['Eliminates typing lag', 'Improves Interaction to Next Paint (INP)', 'Provides built-in isPending state'],
+      limitations: ['Requires React 18+', 'Must be synchronous function inside startTransition'],
+      interviewQuestions: [
+        'What is useTransition in React 18 and what problem does it solve?',
+        'How does urgent state update differ from non-urgent transition state?',
+        'What is the difference between useTransition and useDeferredValue?',
+        'How does useTransition improve Core Web Vitals (INP)?',
+        'What happens if a user types a new character while a transition is in progress?',
+      ],
+    },
+    component: lazy(() => import('../components/ConcurrentMode/UseTransitionDemo')),
+    codePath: '../components/ConcurrentMode/UseTransitionDemo.jsx',
+  },
+  {
+    id: 'list-virtualization',
+    title: 'List Virtualization (Windowing)',
+    category: 'Advanced',
+    difficulty: 'Advanced',
+    readTime: '7 min read',
+    icon: Layers,
+    description:
+      'List Virtualization (Windowing) optimizes large datasets by rendering only the items currently visible in the scroll viewport (~10 DOM nodes instead of 100,000).',
+    workflow: {
+      purpose: 'Render 100,000+ items without consuming browser RAM or freezing the DOM.',
+      steps: [
+        'Calculate total container scroll height (totalItems * itemHeight)',
+        'Listen to scroll container scrollTop event',
+        'Calculate startIndex = Math.floor(scrollTop / itemHeight)',
+        'Render only visible items with absolute positioning top offset',
+      ],
+      execution: [
+        'User scrolls container with 100,000 items',
+        'Scroll event calculates visible range (e.g. items 200 to 210)',
+        'React renders 10 DOM elements inside fixed scroll height box',
+        'Browser memory usage stays minimal (< 5MB)',
+      ],
+      useCase: 'Feeds, tables, high-frequency log monitors, ecommerce catalog lists.',
+      bestPractices: [
+        'Use established windowing libraries like react-window or react-virtualized in production',
+        'Keep item heights uniform or use dynamic height measurement cache',
+        'Add scroll overscan padding (2-3 items) to prevent visual flickering during fast scrolls',
+      ],
+      mistakes: [
+        'Rendering 100,000 DOM nodes directly (causes browser tab crash)',
+        'Forgetting fixed or calculated container height wrapper',
+        'Failing to use keys or unique identifiers on virtual items',
+      ],
+    },
+    keyPoints: {
+      why: 'DOM nodes are expensive. Virtualization keeps DOM node count constant regardless of dataset size.',
+      advantages: ['Constant O(1) DOM node count', 'Zero scroll lag', 'Minimal RAM usage'],
+      limitations: ['Requires fixed or measurable item heights', 'Ctrl+F browser text search requires custom handling'],
+      interviewQuestions: [
+        'What is List Virtualization (Windowing) in React?',
+        'How does windowing handle 100,000 items with constant DOM node count?',
+        'What are the trade-offs of Virtualization (e.g. browser text search)?',
+        'How do react-window and react-virtualized differ in architecture?',
+        'How do you handle dynamic item heights in a virtualized list?',
+      ],
+    },
+    component: lazy(() => import('../components/Virtualization/VirtualListDemo')),
+    codePath: '../components/Virtualization/VirtualListDemo.jsx',
+  },
 ]
 
 export function getTopicById(id) {

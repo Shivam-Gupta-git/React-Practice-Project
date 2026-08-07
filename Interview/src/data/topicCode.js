@@ -19,6 +19,8 @@ import useReducerCode from '../components/UseReducer/UseReducer.jsx?raw'
 import useContextCode from '../components/UseContext/UseContextDemo.jsx?raw'
 import useImperativeHandleCode from '../components/UseImperativeHandle/UseImperativeHandleDemo.jsx?raw'
 import errorBoundaryCode from '../components/ErrorBoundary/ErrorBoundaryDemo.jsx?raw'
+import useTransitionCode from '../components/ConcurrentMode/UseTransitionDemo.jsx?raw'
+import listVirtualizationCode from '../components/Virtualization/VirtualListDemo.jsx?raw'
 
 const codeMap = {
   props: propsCode,
@@ -42,6 +44,8 @@ const codeMap = {
   'use-context': useContextCode,
   'use-imperative-handle': useImperativeHandleCode,
   'error-boundary': errorBoundaryCode,
+  'use-transition': useTransitionCode,
+  'list-virtualization': listVirtualizationCode,
 }
 
 export function getTopicCode(topicId) {

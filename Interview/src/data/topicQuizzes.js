@@ -169,4 +169,52 @@ export const topicQuizzes = {
       explanation: 'useCallback keeps callback reference identities stable across parent re-renders so child components wrapped in React.memo skip re-rendering.',
     },
   ],
+  'use-transition': [
+    {
+      question: 'What problem does the useTransition hook solve in React 18?',
+      options: [
+        'It converts class components into functional components automatically',
+        'It marks state updates as non-blocking transitions so user typing remains responsive during heavy re-renders',
+        'It forces synchronous blocking loops during render',
+        'It bypasses React reconciliation engine',
+      ],
+      correct: 1,
+      explanation: 'useTransition marks state updates as non-urgent transitions, allowing urgent user interactions (typing/clicking) to interrupt background rendering.',
+    },
+    {
+      question: 'What is the purpose of the isPending boolean returned by useTransition?',
+      options: [
+        'It indicates whether a non-urgent transition state render is currently executing in background',
+        'It tracks browser window scroll direction',
+        'It flags syntax errors in JSX',
+        'It disables CSS styles',
+      ],
+      correct: 0,
+      explanation: 'isPending is true while React works on completing the transition render in the background, allowing developers to show visual spinners.',
+    },
+  ],
+  'list-virtualization': [
+    {
+      question: 'What is List Virtualization (Windowing) in React performance engineering?',
+      options: [
+        'Rendering 100,000 DOM nodes simultaneously inside hidden div tags',
+        'Rendering only the small subset of items currently visible in the scroll viewport (~10 DOM nodes)',
+        'Converting React components into desktop electron apps',
+        'Caching database SQL queries in memory',
+      ],
+      correct: 1,
+      explanation: 'List Virtualization keeps DOM node count constant by calculating viewport scroll offsets and rendering only items visible on screen.',
+    },
+    {
+      question: 'Why does Virtualization keep memory usage constant regardless of dataset size (e.g. 100,000 items)?',
+      options: [
+        'Because DOM nodes are created and destroyed dynamically as user scrolls, maintaining fixed ~10 DOM elements',
+        'Because it compresses objects into zip files in memory',
+        'Because JavaScript ignores items past index 100',
+        'Because browser RAM is unlimited',
+      ],
+      correct: 0,
+      explanation: 'Virtualization calculates top offsets and recycles a small window of DOM elements, keeping RAM footprint under 5MB.',
+    },
+  ],
 }
